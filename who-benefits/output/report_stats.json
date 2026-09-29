@@ -1,0 +1,197 @@
+{
+ "sample": {
+  "rows_by_file": {
+   "FIN": 816,
+   "GENDER": 8279,
+   "HEALTH": 665,
+   "WASH": 1133
+  },
+  "double_counted_rows": 1581,
+  "active": 879,
+  "closed": 252,
+  "fcs_projects": 323
+ },
+ "precision": {
+  "health_workforce": {
+   "label": "Health workforce",
+   "correct": 10,
+   "reviewed": 12,
+   "ci": [
+    0.552,
+    0.953
+   ],
+   "v1": 0.17
+  },
+  "jobs_skills": {
+   "label": "Jobs & skills training",
+   "correct": 12,
+   "reviewed": 12,
+   "ci": [
+    0.757,
+    1
+   ],
+   "v1": 1.0
+  },
+  "migration": {
+   "label": "Migration & displacement",
+   "correct": 12,
+   "reviewed": 12,
+   "ci": [
+    0.757,
+    1
+   ],
+   "v1": 1.0
+  },
+  "women_econ": {
+   "label": "Women's economic empowerment",
+   "correct": 12,
+   "reviewed": 12,
+   "ci": [
+    0.757,
+    1
+   ],
+   "v1": 0.83
+  },
+  "care_economy": {
+   "label": "Childcare & care economy",
+   "correct": 12,
+   "reviewed": 12,
+   "ci": [
+    0.757,
+    1
+   ],
+   "v1": 0.42
+  },
+  "menstrual": {
+   "label": "Menstrual health & hygiene",
+   "correct": 5,
+   "reviewed": 5,
+   "ci": [
+    0.566,
+    1
+   ],
+   "v1": 1.0
+  }
+ },
+ "delivery": {
+  "pairs_total": 1771,
+  "with_target_and_dates": 1586,
+  "analysed": 1326,
+  "projects": 764,
+  "behind_rate": 0.553,
+  "auc_best": 0.769,
+  "auc_ci": [
+   0.735,
+   0.8
+  ],
+  "baseline_auc": 0.732,
+  "odds_ratios_per_sd": {
+   "years_since_approval": 0.55,
+   "elapsed": 0.64,
+   "log_commit": 0.92,
+   "fcv": 1.26,
+   "ldc": 1.04
+  },
+  "best": "logit"
+ },
+ "psm_robustness": {
+  "regression_full": {
+   "coef": -3.4,
+   "ci": [
+    -10.0,
+    3.2
+   ],
+   "p": 0.31,
+   "n": 235
+  },
+  "regression_matched": {
+   "coef": -0.5,
+   "ci": [
+    -9.5,
+    8.4
+   ],
+   "p": 0.91,
+   "n": 98
+  }
+ },
+ "gap_by_sub": [
+  {
+   "sub": "CSC_RES_BENE_ENAB_ECO_OPP",
+   "label": "Actions expanding economic opportunity",
+   "n": 50,
+   "projects": 50,
+   "mean": 3.2,
+   "median": 2.6,
+   "ci": [
+    -1.8,
+    8.2
+   ]
+  },
+  {
+   "sub": "CSC_RES_FIN_SERV",
+   "label": "Financial services users",
+   "n": 61,
+   "projects": 61,
+   "mean": 1.5,
+   "median": -0.5,
+   "ci": [
+    -3.4,
+    6.6
+   ]
+  },
+  {
+   "sub": "CSC_RES_GEN_EQU",
+   "label": "Actions advancing gender equality",
+   "n": 78,
+   "projects": 78,
+   "mean": 2.5,
+   "median": 1.1,
+   "ci": [
+    -2.5,
+    7.2
+   ]
+  },
+  {
+   "sub": "CSC_RES_HEA_SERV",
+   "label": "Health, nutrition & population services",
+   "n": 25,
+   "projects": 25,
+   "mean": -10.0,
+   "median": -5.7,
+   "ci": [
+    -16.8,
+    -4.2
+   ]
+  },
+  {
+   "sub": "CSC_RES_WAT_SAN_HYG",
+   "label": "Water, sanitation and/or hygiene",
+   "n": 21,
+   "projects": 21,
+   "mean": 4.7,
+   "median": 1.0,
+   "ci": [
+    -0.1,
+    10.4
+   ]
+  }
+ ],
+ "share_negative_gap": 0.477,
+ "checks": {
+  "att": -1.3,
+  "ci": [
+   -8.7,
+   6.8
+  ],
+  "audit": {
+   "pairs": 1734,
+   "imputed": 387,
+   "no_progress_yet": 665,
+   "inconsistent": 7,
+   "women_only": 349,
+   "identical_share": 91,
+   "informative": 235,
+   "informative_projects": 173
+  }
+ }
+}
