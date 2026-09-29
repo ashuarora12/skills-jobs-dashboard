@@ -1,0 +1,703 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Who Benefits? | Ashu Arora</title>
+<meta name="description" content="Who benefits from World Bank Group projects? An interactive analysis of 1,131 projects' FY25 results on health, jobs and gender: a text classifier, a delivery-gap model and a matched comparison, by Ashu Arora.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,400;8..60,600;8..60,700&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
+<style>
+  :root {
+    --paper: #f9f8f4; --paper-raised: #ffffff; --ink: #17233d; --ink-soft: #4d5a72;
+    --ink-faint: #737e90; --rule: #dcd8cd; --gold: #a8721f; --gold-soft: #f1e3cd;
+    --blue: #2a5a8a; --blue-soft: #dfe9f2; --red: #9b3a34; --red-soft: #f3e0dd;
+    --teal: #2f7566; --teal-soft: #dceae5; --focus-bg: #fff6de;
+    /* chart series (validated pair: CVD ΔE ≥ 24, contrast ≥ 3:1 on surface) */
+    --s1: #2a64a8; --s2: #c9761c; --grid: #ebe8df; --muted-mark: #b9b4a6;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --paper: #14181f; --paper-raised: #1c212b; --ink: #eef0f3; --ink-soft: #b3bac7;
+      --ink-faint: #8a94a5; --rule: #333a46; --gold: #d4a24f; --gold-soft: #3a3122;
+      --blue: #7fb0dd; --blue-soft: #1f2c38; --red: #d98b83; --red-soft: #3a2422;
+      --teal: #6fc2a8; --teal-soft: #1c2e29; --focus-bg: #33291a;
+      --s1: #4383c8; --s2: #c2801f; --grid: #2a303b; --muted-mark: #5a6272;
+    }
+  }
+  :root[data-theme="dark"] {
+    --paper: #14181f; --paper-raised: #1c212b; --ink: #eef0f3; --ink-soft: #b3bac7;
+    --ink-faint: #8a94a5; --rule: #333a46; --gold: #d4a24f; --gold-soft: #3a3122;
+    --blue: #7fb0dd; --blue-soft: #1f2c38; --red: #d98b83; --red-soft: #3a2422;
+    --teal: #6fc2a8; --teal-soft: #1c2e29; --focus-bg: #33291a;
+    --s1: #4383c8; --s2: #c2801f; --grid: #2a303b; --muted-mark: #5a6272;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--paper); color: var(--ink); font-family: 'IBM Plex Sans', sans-serif; line-height: 1.55; }
+  a { color: var(--blue); }
+  .wrap { max-width: 1120px; margin: 0 auto; padding: 0 28px; }
+  @media (max-width: 640px) { .wrap { padding: 0 16px; } }
+
+  .topbar { position: sticky; top: 0; z-index: 40; background: var(--paper); border-bottom: 1px solid var(--rule); }
+  .topbar-inner { max-width: 1120px; margin: 0 auto; padding: 10px 28px; display: flex; align-items: center; gap: 16px; }
+  .topbar-title { font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: var(--ink-faint); flex: 1; }
+  .theme-btn, .link-btn { font-family: 'IBM Plex Mono', monospace; font-size: 12px; border: 1px solid var(--rule); background: var(--paper-raised); color: var(--ink-soft); padding: 6px 12px; border-radius: 3px; cursor: pointer; white-space: nowrap; text-decoration: none; }
+  .theme-btn:hover, .link-btn:hover { border-color: var(--gold); color: var(--ink); }
+  .toc { display: flex; gap: 14px; font-size: 12px; }
+  .toc a { color: var(--ink-faint); text-decoration: none; font-family: 'IBM Plex Mono', monospace; }
+  .toc a:hover { color: var(--ink); }
+  @media (max-width: 900px) { .toc { display: none; } }
+  @media (max-width: 640px) { .topbar-title { display: none; } .topbar-inner { justify-content: space-between; padding: 10px 16px; } }
+
+  header.hero { border-bottom: 1px solid var(--rule); padding: 44px 0 40px; }
+  .hero-grid { display: grid; grid-template-columns: 1fr 320px; gap: 40px; align-items: start; }
+  @media (max-width: 860px) { .hero-grid { grid-template-columns: 1fr; } }
+  .eyebrow { font-family: 'IBM Plex Mono', monospace; font-size: 12.5px; letter-spacing: 0.04em; color: var(--gold); margin: 0 0 14px; }
+  h1 { font-family: 'Source Serif 4', serif; font-weight: 700; font-size: clamp(30px, 4.4vw, 46px); line-height: 1.12; margin: 0 0 18px; max-width: 18ch; }
+  .lede { font-size: 17px; color: var(--ink-soft); max-width: 66ch; margin: 0 0 30px; }
+  .statrow { display: flex; flex-wrap: wrap; gap: 34px; margin-top: 8px; }
+  .stat .num { font-family: 'Source Serif 4', serif; font-size: 34px; font-weight: 600; color: var(--ink); display: block; }
+  .stat .label { font-size: 13px; color: var(--ink-faint); margin-top: 2px; }
+  .glance-card { background: var(--paper-raised); border: 1px solid var(--rule); border-left: 3px solid var(--gold); border-radius: 3px; padding: 20px 22px; }
+  .glance-title { font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: 0.05em; color: var(--gold); margin: 0 0 14px; }
+  .glance-card dl { margin: 0; }
+  .glance-card dt { font-family: 'IBM Plex Mono', monospace; font-size: 10.5px; text-transform: uppercase; letter-spacing: 0.03em; color: var(--ink-faint); margin: 0 0 3px; }
+  .glance-card dd { margin: 0 0 14px; font-size: 13px; line-height: 1.45; color: var(--ink-soft); }
+  .glance-card dd:last-child { margin-bottom: 0; }
+  .glance-card dd strong { color: var(--ink); font-weight: 600; }
+
+  section { padding: 52px 0; border-bottom: 1px solid var(--rule); }
+  .section-head { display: flex; align-items: baseline; gap: 14px; margin-bottom: 6px; }
+  .section-no { font-family: 'IBM Plex Mono', monospace; color: var(--ink-faint); font-size: 13px; }
+  h2 { font-family: 'Source Serif 4', serif; font-size: 27px; font-weight: 600; margin: 0; }
+  h3 { font-family: 'Source Serif 4', serif; font-size: 19px; font-weight: 600; margin: 30px 0 8px; }
+  .section-intro { color: var(--ink-soft); max-width: 72ch; margin: 14px 0 26px; font-size: 15.5px; }
+  .section-intro p { margin: 0 0 10px; }
+  .card { background: var(--paper-raised); border: 1px solid var(--rule); border-radius: 3px; padding: 22px 24px 16px; }
+  .card + .card, .grid2 + .card, .card + .grid2 { margin-top: 20px; }
+  .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+  @media (max-width: 860px) { .grid2 { grid-template-columns: 1fr; } }
+  .chart-title { font-size: 13.5px; font-weight: 600; color: var(--ink-soft); margin-bottom: 4px; }
+  .chart-sub { font-size: 12px; color: var(--ink-faint); margin-bottom: 12px; }
+  .chart-box { position: relative; width: 100%; height: 320px; }
+  .chart-box.short { height: 250px; }
+  .chart-box.tall { height: 400px; }
+  .legend { display: flex; gap: 16px; flex-wrap: wrap; font-size: 12.5px; color: var(--ink-soft); margin: 2px 0 10px; }
+  .legend i { display: inline-block; width: 12px; height: 12px; border-radius: 2px; margin-right: 6px; vertical-align: -1px; }
+  .callout { background: var(--gold-soft); border-left: 3px solid var(--gold); padding: 16px 18px; font-size: 14.5px; color: var(--ink-soft); margin-top: 20px; }
+  .callout strong { color: var(--ink); }
+  .callout.note { background: var(--blue-soft); border-left-color: var(--blue); }
+
+  .tag { display: inline-block; font-family: 'IBM Plex Mono', monospace; font-size: 10px; letter-spacing: 0.04em; text-transform: uppercase; padding: 2px 7px; border-radius: 10px; vertical-align: 2px; margin-left: 6px; white-space: nowrap; }
+  .tag.src { background: var(--teal-soft); color: var(--teal); }
+  .tag.est { background: var(--blue-soft); color: var(--blue); }
+  .tag.chk { background: var(--red-soft); color: var(--red); }
+  .src-line { font-size: 11.5px; color: var(--ink-faint); margin-top: 10px; }
+
+  .pillbar { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 14px; }
+  .pill { font-family: 'IBM Plex Mono', monospace; font-size: 11.5px; padding: 5px 11px; border-radius: 14px; border: 1px solid var(--rule); background: transparent; color: var(--ink-soft); cursor: pointer; }
+  .pill.active { background: var(--ink); color: var(--paper); border-color: var(--ink); }
+  .pill:hover:not(.active) { border-color: var(--gold); color: var(--ink); }
+
+  table.data-table { width: 100%; border-collapse: collapse; font-size: 13.5px; }
+  table.data-table th { text-align: left; font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: 0.03em; color: var(--ink-faint); font-weight: 500; padding: 8px 6px; border-bottom: 1px solid var(--rule); vertical-align: bottom; }
+  table.data-table th.num, table.data-table td.num { text-align: right; }
+  table.data-table td { padding: 8px 6px; border-bottom: 1px solid var(--rule); vertical-align: top; }
+  table.data-table td.num { font-family: 'IBM Plex Mono', monospace; color: var(--ink-soft); white-space: nowrap; }
+  table.data-table tr.total td { font-weight: 600; background: var(--focus-bg); }
+  .table-scroll { max-height: 460px; overflow: auto; border: 1px solid var(--rule); border-radius: 3px; background: var(--paper-raised); }
+  .table-scroll table th { position: sticky; top: 0; background: var(--paper-raised); z-index: 1; }
+  .table-x { overflow-x: auto; position: relative; }
+  .table-meta { font-size: 12px; color: var(--ink-faint); margin: 10px 2px 0; }
+  .ev { font-size: 12.5px; color: var(--ink-soft); }
+  .ev mark { background: var(--gold-soft); color: var(--ink); padding: 0 2px; border-radius: 2px; }
+  .tchip { display: inline-block; font-size: 10.5px; font-family: 'IBM Plex Mono', monospace; padding: 1px 6px; border-radius: 8px; background: var(--blue-soft); color: var(--ink-soft); margin: 2px 3px 0 0; white-space: nowrap; }
+  .search-row { display: flex; gap: 8px; margin-bottom: 12px; }
+  .search-row input { flex: 1; font-family: 'IBM Plex Sans', sans-serif; font-size: 14px; padding: 9px 12px; border: 1px solid var(--rule); border-radius: 3px; background: var(--paper-raised); color: var(--ink); min-width: 0; }
+  .search-row input:focus { outline: none; border-color: var(--gold); }
+
+  .theme-cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 20px; }
+  @media (max-width: 860px) { .theme-cards { grid-template-columns: 1fr 1fr; } }
+  @media (max-width: 520px) { .theme-cards { grid-template-columns: 1fr; } }
+  .tcard { background: var(--paper-raised); border: 1px solid var(--rule); border-radius: 3px; padding: 14px 16px; cursor: pointer; }
+  .tcard:hover, .tcard.active { border-color: var(--gold); }
+  .tcard.active { box-shadow: inset 3px 0 0 var(--gold); }
+  .tcard .tl { font-size: 13px; font-weight: 600; color: var(--ink-soft); }
+  .tcard .tn { font-family: 'Source Serif 4', serif; font-size: 28px; font-weight: 600; line-height: 1.1; margin: 4px 0 2px; }
+  .tcard .tn small { font-family: 'IBM Plex Sans', sans-serif; font-size: 12px; font-weight: 400; color: var(--ink-faint); }
+  .tcard .tp { font-size: 11.5px; color: var(--ink-faint); }
+
+  .model-compare { display: flex; gap: 18px; margin-bottom: 20px; flex-wrap: wrap; }
+  .model-box { flex: 1; min-width: 200px; border: 1px solid var(--rule); border-radius: 3px; padding: 16px 20px; background: var(--paper-raised); }
+  .model-box.winner { border-color: var(--gold); }
+  .model-box .mt { font-family: 'IBM Plex Mono', monospace; font-size: 11.5px; color: var(--ink-faint); text-transform: uppercase; letter-spacing: 0.04em; }
+  .model-box .big { font-family: 'Source Serif 4', serif; font-size: 30px; font-weight: 600; margin: 6px 0 2px; }
+  .model-box .desc { font-size: 12.5px; color: var(--ink-soft); }
+
+  .result-box { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; background: var(--rule); border: 1px solid var(--rule); border-radius: 3px; overflow: hidden; margin-bottom: 20px; }
+  @media (max-width: 700px) { .result-box { grid-template-columns: 1fr; } }
+  .result-box > div { background: var(--paper-raised); padding: 16px 20px; }
+  .result-box .mt { font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: var(--ink-faint); text-transform: uppercase; letter-spacing: 0.04em; }
+  .result-box .big { font-family: 'Source Serif 4', serif; font-size: 28px; font-weight: 600; margin: 4px 0; }
+  .result-box .desc { font-size: 12.5px; color: var(--ink-soft); }
+
+  .method-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+  @media (max-width: 860px) { .method-grid { grid-template-columns: 1fr; } }
+  .method-grid .card h4 { font-family: 'IBM Plex Mono', monospace; font-size: 11.5px; letter-spacing: 0.05em; text-transform: uppercase; color: var(--gold); margin: 0 0 10px; font-weight: 500; }
+  .method-grid .card ul { margin: 0; padding-left: 18px; font-size: 14px; color: var(--ink-soft); }
+  .method-grid .card li { margin-bottom: 8px; }
+  .method-grid .card p { font-size: 14px; color: var(--ink-soft); margin: 0 0 10px; }
+  footer { padding: 36px 0 70px; font-size: 13px; color: var(--ink-faint); }
+  .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
+  details.tableview { margin-top: 12px; font-size: 13px; }
+  details.tableview summary { cursor: pointer; color: var(--ink-faint); font-family: 'IBM Plex Mono', monospace; font-size: 11.5px; }
+</style>
+</head>
+<body>
+
+<div class="topbar"><div class="topbar-inner">
+  <a class="link-btn" href="/projects">&larr; Ashu Arora &middot; Projects</a>
+  <span class="topbar-title">WHO BENEFITS? &middot; HEALTH, JOBS &amp; GENDER IN THE WBG PORTFOLIO</span>
+  <nav class="toc" aria-label="Sections">
+    <a href="#results">01 Results</a><a href="#themes">02 Text</a><a href="#delivery">03 Model</a><a href="#gender">04 Matching</a><a href="#methods">05 Methods</a>
+  </nav>
+  <button class="theme-btn" id="themeToggle">&#9788; / &#9789; theme</button>
+</div></div>
+
+<div class="wrap">
+
+<header class="hero">
+  <div class="hero-grid">
+    <div>
+      <p class="eyebrow">DATA SCIENCE PORTFOLIO PROJECT &middot; DEVELOPMENT ANALYTICS</p>
+      <h1>Who benefits? Health, jobs &amp; gender in the World Bank Group portfolio</h1>
+      <p class="lede">Can health investment create jobs, especially for women, and does labour mobility play a part? Before asking whether it works, it helps to ask what is measured. This dashboard uses the World Bank Group's own FY25 results data to ask three questions. Who is being reached? Does the portfolio measure the health–jobs–mobility link? Do projects deliver to women as planned?</p>
+      <div class="statrow">
+        <div class="stat"><span class="num" id="statProjects">–</span><span class="label">projects analysed</span></div>
+        <div class="stat"><span class="num" id="statCountries">–</span><span class="label">countries</span></div>
+        <div class="stat"><span class="num" id="statRecords">–</span><span class="label">project-indicator records</span></div>
+        <div class="stat"><span class="num" id="statHW">–</span><span class="label">projects that measure health workers</span></div>
+      </div>
+    </div>
+    <div class="glance-card">
+      <p class="glance-title">AT A GLANCE</p>
+      <dl>
+        <dt>Data</dt><dd>World Bank Group Scorecard exports, <strong>FY25 cycle</strong> (results as of 30 June 2025), plus Scorecard poverty, food-security and WASH context.</dd>
+        <dt>Methods</dt><dd>Rule-based text classification with manual precision review &middot; logistic regression vs. gradient boosting (project-grouped CV) &middot; propensity-score matching with balance diagnostics.</dd>
+        <dt>Headline</dt><dd><strong id="glanceHW">–</strong></dd>
+        <dt>Built with</dt><dd>Python (pandas, scikit-learn) &rarr; static JSON &rarr; this page. No backend.</dd>
+      </dl>
+    </div>
+  </div>
+</header>
+
+<!-- ============================================================ 01 -->
+<section id="results">
+  <div class="section-head"><span class="section-no">01</span><h2>Who is being reached?</h2></div>
+  <div class="section-intro">
+    <p>The people reached by Bank Group projects, by region, and how many of them are women. Pick a result type. Achieved counts are progress to date. Targets are what projects expect to deliver by completion.</p>
+  </div>
+  <div class="pillbar" id="resultPills" role="tablist" aria-label="Result type"></div>
+  <div class="card">
+    <div class="chart-title" id="resultTitle"></div>
+    <div class="chart-sub">People reached to date, millions <span class="tag src">Sourced &middot; WBG Scorecard FY25</span></div>
+    <div class="legend"><span><i style="background:var(--s1)"></i>All beneficiaries</span><span><i style="background:var(--s2)"></i>Women</span></div>
+    <div class="chart-box" id="resultBox"><canvas id="resultChart" aria-label="Beneficiaries by region" role="img"></canvas></div>
+  </div>
+  <div class="card table-x">
+    <div class="chart-title">Region detail with development context</div>
+    <table class="data-table" id="resultTable">
+      <thead><tr>
+        <th>Region</th><th class="num">Reached</th><th class="num">% of target</th><th class="num">Women's share</th>
+        <th class="num">Poverty<br>($3.00/day)</th><th class="num">Food<br>insecurity</th><th class="num">Basic<br>hygiene</th>
+      </tr></thead>
+      <tbody></tbody>
+    </table>
+    <p class="table-meta" id="resultMeta"></p>
+  </div>
+  <div class="callout" id="resultCallout"></div>
+</section>
+
+<!-- ============================================================ 02 -->
+<section id="themes">
+  <div class="section-head"><span class="section-no">02</span><h2>Does the portfolio measure the health&ndash;jobs&ndash;mobility link?</h2></div>
+  <div class="section-intro">
+    <p>A small evidence-extraction exercise, in the spirit of tools like the World Bank's ImpactAI. Every project's development objective and results indicators are read by a transparent keyword classifier. It tags six themes and keeps the exact phrase that triggered each tag as evidence.</p>
+    <p>For each theme, a random sample of tagged projects was checked by hand to measure <strong>precision</strong>: how many of the tags are correct. The first version failed that check for two themes and was fixed; both versions' scores are shown.</p>
+  </div>
+  <div class="theme-cards" id="themeCards"></div>
+  <div class="callout" id="themeCallout"></div>
+  <h3>Browse the tagged projects</h3>
+  <div class="search-row"><input type="search" id="projSearch" placeholder="Search project, country or evidence text&hellip;" aria-label="Search projects"></div>
+  <div class="pillbar" id="themePills"></div>
+  <div class="table-scroll">
+    <table class="data-table" id="projTable">
+      <thead><tr><th>Project</th><th>Country</th><th>Themes</th><th>Evidence (matched phrase highlighted)</th></tr></thead>
+      <tbody></tbody>
+    </table>
+  </div>
+  <p class="table-meta" id="projMeta"></p>
+</section>
+
+<!-- ============================================================ 03 -->
+<section id="delivery">
+  <div class="section-head"><span class="section-no">03</span><h2>Which projects fall behind, and can we predict it?</h2></div>
+  <div class="section-intro">
+    <p>An early-warning model, the kind of tool a team could use to decide where to adapt. For each result a project reports, it compares the <em>share of the target delivered</em> with the <em>share of the implementation period that has passed</em>. The result is flagged <strong>behind</strong> if delivery trails time elapsed by more than 10 percentage points. Results less than 20% of the way through implementation are too early to judge and are excluded.</p>
+    <p>Two models predict that flag from project features: region, income group, fragility, sector, instrument, size and timing. They're scored on out-of-fold predictions, with all of a project's results kept in the same fold so the model never sees a project it's being tested on.</p>
+  </div>
+  <div class="model-compare" id="modelBoxes"></div>
+  <div class="grid2">
+    <div class="card">
+      <div class="chart-title">What the model relies on</div>
+      <div class="chart-sub">Permutation importance: drop in AUC when a feature is shuffled <span class="tag est">Model estimate</span></div>
+      <div class="chart-box short"><canvas id="impChart" role="img" aria-label="Feature importance"></canvas></div>
+    </div>
+    <div class="card">
+      <div class="chart-title">Share of results flagged &ldquo;behind&rdquo;, by project age</div>
+      <div class="chart-sub">Years since Board approval <span class="tag src">Derived from Scorecard project data</span></div>
+      <div class="chart-box short"><canvas id="ageChart" role="img" aria-label="Behind rate by project age"></canvas></div>
+    </div>
+  </div>
+  <div class="callout" id="ageCallout"></div>
+  <div class="grid2" style="margin-top:20px">
+    <div class="card">
+      <div class="chart-title">Share flagged &ldquo;behind&rdquo;, by lead global department</div>
+      <div class="chart-sub">Departments with &ge; 30 results; codes as reported in the Scorecard export</div>
+      <div class="chart-box"><canvas id="deptChart" role="img" aria-label="Behind rate by department"></canvas></div>
+    </div>
+    <div class="card">
+      <div class="chart-title">Calibration: predicted vs. observed</div>
+      <div class="chart-sub">Out-of-fold predictions grouped into deciles; dashed line = perfect calibration</div>
+      <div class="chart-box"><canvas id="calChart" role="img" aria-label="Calibration plot"></canvas></div>
+    </div>
+  </div>
+  <h3>Does the model work equally well everywhere?</h3>
+  <p class="section-intro" style="margin-top:0">An early-warning tool that misses problems in one region more often than in others would steer attention unfairly. The table reports out-of-fold performance by subgroup. <strong>Miss rate</strong> is the share of truly-behind results the model failed to flag.</p>
+  <div class="pillbar" id="fairPills"></div>
+  <div class="card table-x">
+    <table class="data-table" id="fairTable">
+      <thead><tr><th>Group</th><th class="num">Results</th><th class="num">Observed behind</th><th class="num">Predicted behind</th><th class="num">AUC</th><th class="num">Miss rate</th></tr></thead>
+      <tbody></tbody>
+    </table>
+  </div>
+  <div class="callout note" id="fairCallout"></div>
+</section>
+
+<!-- ============================================================ 04 -->
+<section id="gender">
+  <div class="section-head"><span class="section-no">04</span><h2>Are women reached as planned, and does fragility widen the gap?</h2></div>
+  <div class="section-intro">
+    <p>For results reported both in total and for women, compare women's <em>planned</em> share of beneficiaries with their <em>achieved</em> share. A negative gap means women are falling behind plan.</p>
+    <p>Then ask whether projects in fragile and conflict-affected settings (FCS) show a larger gap than otherwise similar projects elsewhere. This uses <strong>propensity-score matching</strong>, the same quasi-experimental approach used in impact evaluations when randomisation isn't possible.</p>
+  </div>
+
+  <h3>Step 1 &middot; Which women's figures are actually measured?</h3>
+  <p class="section-intro" style="margin-top:0">Before measuring a gap, check whether one <em>can</em> exist. Many women's figures in the Scorecard are <strong>not counted directly</strong>. They're derived by applying a fixed share, such as the female share of the population, to the total. When the same share is applied to the target and to progress, the planned and achieved shares are identical by construction.</p>
+  <div class="card">
+    <div class="chart-title">What happens to the <span id="auditPairs"></span> project results reported for both women and in total</div>
+    <div class="chart-sub">Only the last group can reveal a gender delivery gap <span class="tag src">Derived from Scorecard project data</span></div>
+    <div class="chart-box short"><canvas id="auditChart" role="img" aria-label="Measurement audit"></canvas></div>
+  </div>
+
+  <h3>Step 2 &middot; Planned vs. achieved women's share</h3>
+  <div class="grid2">
+    <div class="card">
+      <div class="chart-title">Each dot is one project result</div>
+      <div class="legend"><span><i style="background:var(--s1)"></i>Not FCS</span><span><i style="background:var(--s2)"></i>Fragile / conflict-affected</span></div>
+      <div class="chart-box tall"><canvas id="gapScatter" role="img" aria-label="Planned versus achieved women's share"></canvas></div>
+      <p class="src-line">Points below the dashed line: women's achieved share is lower than planned.</p>
+    </div>
+    <div class="card">
+      <div class="chart-title">Average gap by result type</div>
+      <div class="chart-sub">Achieved minus planned women's share, percentage points</div>
+      <div class="chart-box tall"><canvas id="subChart" role="img" aria-label="Gap by result type"></canvas></div>
+    </div>
+  </div>
+  <div class="callout" id="subCallout"></div>
+
+  <h3>Step 3 &middot; Matched comparison: FCS vs. similar non-FCS results</h3>
+  <p class="section-intro" style="margin-top:0">FCS projects differ from others in ways that could affect the gap on their own: more are in Africa and in low-income countries. Each FCS result is matched to its nearest non-FCS neighbour on the estimated probability of being in an FCS setting. That probability is based on region, income group, project size, result type, status and the planned share of women. The plot shows covariate balance before and after matching.</p>
+  <div class="grid2">
+    <div class="card">
+      <div class="chart-title">Covariate balance (standardised mean difference)</div>
+      <div class="legend"><span><i style="background:var(--muted-mark);border-radius:50%"></i>Before matching</span><span><i style="background:var(--s1);border-radius:50%"></i>After matching</span></div>
+      <div class="chart-box tall"><canvas id="balChart" role="img" aria-label="Covariate balance"></canvas></div>
+      <p class="src-line">Shaded band: |SMD| &lt; 0.1, the usual threshold for good balance.</p>
+    </div>
+    <div>
+      <div class="result-box" style="grid-template-columns:1fr" id="psmBox"></div>
+      <div class="callout note" id="psmCallout" style="margin-top:0"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================ 05 -->
+<section id="methods">
+  <div class="section-head"><span class="section-no">05</span><h2>Methods, limitations &amp; responsible data</h2></div>
+  <p class="section-intro">What each number is, where it comes from, and what it cannot tell you.</p>
+  <div class="method-grid">
+    <div class="card">
+      <h4>Data provenance</h4>
+      <ul>
+        <li><strong>Results and project records:</strong> World Bank Group Scorecard exports downloaded from scorecard.worldbank.org, FY25 cycle, as of 30 June 2025. Covers people reached with health, nutrition &amp; population services; WASH; gender-equality and economic-opportunity actions; financial services; and health-emergency capacity.</li>
+        <li><strong>Context:</strong> Scorecard vision indicators for poverty at $3.00/day, food and nutrition insecurity, and basic hygiene. The latest year is shown for each region.</li>
+        <li><strong>Region codes:</strong> the export's &ldquo;ACW&rdquo; row is <em>All countries</em>. The seven regional rows sum to it exactly, and the pipeline checks this.</li>
+        <li><strong>Filters applied:</strong> WBG-wide organisation rows; the all-projects disability flag (the &ldquo;Yes&rdquo; rows are a subset and would double-count); results the export marks as double-counted are excluded; exact duplicate rows across the four exports are dropped.</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h4>What is sourced vs. estimated</h4>
+      <p><span class="tag src">Sourced</span> Numbers taken directly from Scorecard exports, or simple arithmetic on them (sums, shares, % of target).</p>
+      <p><span class="tag est">Model estimate</span> Outputs of models fitted in this analysis: predicted probabilities, importance scores, matched differences. Each comes with its uncertainty or validation.</p>
+      <p><span class="tag chk">Check reporting</span> Figures that are internally inconsistent in the source and probably reflect reporting practice, not reality.</p>
+      <p>Nothing on this page is illustrative or simulated. Where data is missing, the page says &ldquo;no data&rdquo;.</p>
+    </div>
+    <div class="card">
+      <h4>Limitations</h4>
+      <ul>
+        <li><strong>Matching is not randomisation.</strong> Propensity-score matching only balances what is observed. Unobserved differences between FCS and non-FCS projects, such as implementation capacity or security, could still bias the comparison. Balance on three covariates stays slightly above 0.1 after matching (section 04). The result is a matched association, not a causal effect.</li>
+        <li><strong>Small informative sample.</strong> Only results where women are counted directly can show a gap, which leaves a few hundred results. The confidence interval is correspondingly wide.</li>
+        <li><strong>&ldquo;Behind&rdquo; uses a straight-line benchmark.</strong> Many results are back-loaded, so young projects look behind more often (section 03). The model learns this, but the flag is a screening signal, not a verdict on performance.</li>
+        <li><strong>The text classifier is rule-based, and recall is unmeasured.</strong> Precision was checked on small samples (5&ndash;12 per theme). Projects that describe a theme in words the rules don't anticipate will be missed.</li>
+        <li><strong>Coverage.</strong> The Scorecard reports corporate results indicators, not every indicator a project tracks.</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h4>Privacy, fairness &amp; reproducibility</h4>
+      <ul>
+        <li><strong>Privacy:</strong> the analysis uses only public, aggregated, project-level data. No individual or household records are used or stored.</li>
+        <li><strong>Fairness:</strong> model performance is reported by region, income group and FCS status (section 03). The subgroup where it is weakest is named, not hidden.</li>
+        <li><strong>Validation:</strong> the classifier's review samples, labels and the failing first version are saved in the repository. The review is a draft pending the author's confirmation.</li>
+        <li><strong>Reproducibility:</strong> one script (<code>analysis/who-benefits/pipeline.py</code>) rebuilds every number from the raw exports with fixed random seeds. <a href="https://github.com/ashuarora12/Personal-Website/tree/main/analysis/who-benefits" target="_blank" rel="noopener">Code and data on GitHub &rarr;</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="callout note">
+    <strong>Related research.</strong> This dashboard links to two strands of the author's work. The first is ongoing research on <em>Global Skill Partnerships, skills and international labour mobility</em>, which evaluates a skills-mobility pilot with propensity-score matching. The second is <a href="https://doi.org/10.1080/00220388.2023.2252139" id="paperLink" target="_blank" rel="noopener"><em>Bleeding at the Margins</em></a> (Journal of Development Studies, 2023) on menstrual health among SC/ST women in India. Section 02 shows how rarely either topic appears among the Bank's measured results.
+  </div>
+</section>
+
+<footer>
+  <p><strong style="color:var(--ink-soft)">Sources.</strong> World Bank Group Scorecard (scorecard.worldbank.org): corporate results indicators CSC_RES_HEA_SERV, CSC_RES_WAT_SAN_HYG_TOT, CSC_RES_GEN_EQU_BENE, CSC_RES_FIN_SERV_WOM and CSC_RES_HEA_EMER_BENE, with their WB project information sheets; vision indicators SI_POV_DDAY, SN_ITK_MSFI_ZS, SH_STA_HYGN_ZS. FY25 reporting cycle, results as of 30 June 2025. Analysis and interpretation are the author's own and do not represent the World Bank Group.</p>
+  <p id="footGen"></p>
+</footer>
+</div>
+
+<script>
+const DATA = /*__DATA__*/null;
+
+// ---------------------------------------------------------------- helpers
+const $ = s => document.querySelector(s);
+const fmtInt = n => n == null ? '–' : Math.round(n).toLocaleString('en-US');
+const fmtM = n => n == null ? '–' : (n >= 1e6 ? (n / 1e6).toFixed(n >= 1e8 ? 0 : 1) + 'M' : n >= 1e3 ? (n / 1e3).toFixed(0) + 'k' : fmtInt(n));
+const pct = (x, d = 0) => x == null || !isFinite(x) ? '–' : (x * 100).toFixed(d) + '%';
+const esc = s => String(s ?? '').replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+const css = v => getComputedStyle(document.documentElement).getPropertyValue(v).trim();
+const REG_ORDER = ['AFE', 'AFW', 'EAP', 'ECA', 'LCR', 'MENAAP', 'SAR'];
+const REG_SHORT = { AFE: 'E. & S. Africa', AFW: 'W. & C. Africa', EAP: 'East Asia & Pac.', ECA: 'Europe & C. Asia', LCR: 'Latin Am. & Car.', MENAAP: 'MENA, Afg. & Pak.', SAR: 'South Asia', ACW: 'All countries' };
+const charts = {};
+
+// ---------------------------------------------------------------- theme
+const themeBtn = $('#themeToggle');
+function currentDark() {
+  const t = document.documentElement.getAttribute('data-theme');
+  return t ? t === 'dark' : window.matchMedia('(prefers-color-scheme: dark)').matches;
+}
+try { const saved = localStorage.getItem('wb-theme'); if (saved) document.documentElement.setAttribute('data-theme', saved); } catch (e) {}
+themeBtn.addEventListener('click', () => {
+  const next = currentDark() ? 'light' : 'dark';
+  document.documentElement.setAttribute('data-theme', next);
+  try { localStorage.setItem('wb-theme', next); } catch (e) {}
+  renderAll();
+});
+window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', renderAll);
+
+function baseOpts(extra = {}) {
+  const ink = css('--ink-soft'), grid = css('--grid'), faint = css('--ink-faint');
+  Chart.defaults.font.family = "'IBM Plex Sans', sans-serif";
+  Chart.defaults.color = faint;
+  return Object.assign({
+    responsive: true, maintainAspectRatio: false, animation: { duration: 300 },
+    plugins: {
+      legend: { display: false },
+      tooltip: { backgroundColor: css('--ink'), titleColor: css('--paper'), bodyColor: css('--paper'), padding: 10, cornerRadius: 3, displayColors: true, boxPadding: 4 }
+    },
+    scales: {
+      x: { grid: { color: grid }, border: { display: false }, ticks: { color: faint } },
+      y: { grid: { color: grid }, border: { display: false }, ticks: { color: ink } }
+    }
+  }, extra);
+}
+function mk(id, cfg) { if (charts[id]) charts[id].destroy(); charts[id] = new Chart(document.getElementById(id), cfg); }
+const bar = { borderRadius: 4, borderSkipped: 'start', maxBarThickness: 18 };
+
+// ---------------------------------------------------------------- hero
+function renderHero() {
+  const m = DATA.meta, t = DATA.themes;
+  const hw = t.summary.find(x => x.key === 'health_workforce');
+  $('#statProjects').textContent = fmtInt(m.projects);
+  $('#statCountries').textContent = fmtInt(m.countries);
+  $('#statRecords').textContent = fmtInt(m.project_records);
+  $('#statHW').textContent = hw.projects;
+  $('#glanceHW').textContent = `${hw.projects} of ${fmtInt(t.n_projects)} projects (${pct(hw.share, 1)}) report a results indicator about health workers; ${t.health_workforce_and_migration} link it to labour mobility.`;
+  $('#footGen').textContent = `Dashboard data generated ${m.generated} by pipeline.py from the FY25 Scorecard exports.`;
+}
+
+// ---------------------------------------------------------------- 01 results
+const RESULT_TYPES = [
+  { sub: 'CSC_RES_HEA_SERV', label: 'Health services' },
+  { sub: 'CSC_RES_WAT_SAN_HYG', label: 'Water, sanitation & hygiene' },
+  { sub: 'CSC_RES_GEN_EQU', label: 'Gender-equality actions' },
+  { sub: 'CSC_RES_BENE_ENAB_ECO_OPP', label: 'Economic opportunity' },
+  { sub: 'CSC_RES_FIN_SERV', label: 'Financial services', womenSub: 'CSC_RES_FIN_SERV_WOM_CUS' },
+];
+let resultSel = 'CSC_RES_HEA_SERV';
+function resultRow(sub, code) {
+  const t = RESULT_TYPES.find(x => x.sub === sub);
+  const R = DATA.results[sub][code] || {};
+  const W = t.womenSub ? (DATA.results[t.womenSub][code] || {}).Female : R.Female;
+  const tot = R.Total || {};
+  return {
+    reached: tot.achieved, expected: tot.expected, women: W ? W.achieved : null,
+    progress: tot.achieved != null && tot.expected ? tot.achieved / tot.expected : null,
+    share: W && tot.achieved ? W.achieved / tot.achieved : null
+  };
+}
+function renderResults() {
+  const pills = $('#resultPills');
+  pills.innerHTML = RESULT_TYPES.map(t => `<button class="pill ${t.sub === resultSel ? 'active' : ''}" data-sub="${t.sub}" role="tab" aria-selected="${t.sub === resultSel}">${esc(t.label)}</button>`).join('');
+  pills.querySelectorAll('.pill').forEach(b => b.onclick = () => { resultSel = b.dataset.sub; renderResults(); });
+  const t = RESULT_TYPES.find(x => x.sub === resultSel);
+  $('#resultTitle').textContent = DATA.subs[resultSel] + ' by region';
+  const rows = REG_ORDER.map(c => ({ code: c, ...resultRow(resultSel, c) }));
+  mk('resultChart', {
+    type: 'bar',
+    data: {
+      labels: rows.map(r => REG_SHORT[r.code]),
+      datasets: [
+        { label: 'All beneficiaries', data: rows.map(r => r.reached / 1e6), backgroundColor: css('--s1'), ...bar },
+        { label: 'Women', data: rows.map(r => r.women == null ? null : r.women / 1e6), backgroundColor: css('--s2'), ...bar }
+      ]
+    },
+    options: baseOpts({
+      indexAxis: 'y',
+      datasets: { bar: { categoryPercentage: 0.7, barPercentage: 0.9 } },
+      plugins: {
+        legend: { display: false },
+        tooltip: Object.assign(baseOpts().plugins.tooltip, {
+          callbacks: {
+            label: ctx => {
+              const r = rows[ctx.dataIndex];
+              if (ctx.datasetIndex === 0) return ` All: ${fmtM(r.reached)} reached (${pct(r.progress)} of target ${fmtM(r.expected)})`;
+              return r.women == null ? ' Women: no data' : ` Women: ${fmtM(r.women)} (${pct(r.share)} of reached)`;
+            }
+          }
+        })
+      },
+      scales: {
+        x: { grid: { color: css('--grid') }, border: { display: false }, ticks: { color: css('--ink-faint'), callback: v => v + 'M' } },
+        y: { grid: { display: false }, border: { display: false }, ticks: { color: css('--ink-soft') } }
+      }
+    })
+  });
+  const ctx = DATA.context;
+  const cval = (k, c) => { const x = ctx[k][c]; return x ? `${x.value.toFixed(1)}%<span class="sr-only"> (${x.year})</span>` : '<span style="color:var(--ink-faint)">no data</span>'; };
+  const all = { code: 'ACW', ...resultRow(resultSel, 'ACW') };
+  const flag = r => r.share != null && (r.share < 0.3 && resultSel !== 'CSC_RES_FIN_SERV') ? ' <span class="tag chk" title="Women\'s share is implausibly low for a population-wide service; likely incomplete sex-disaggregated reporting">check reporting</span>' : '';
+  $('#resultTable tbody').innerHTML = [all, ...rows].map(r => `<tr class="${r.code === 'ACW' ? 'total' : ''}">
+      <td>${esc(DATA.regions[r.code])}</td><td class="num">${fmtM(r.reached)}</td><td class="num">${pct(r.progress)}</td>
+      <td class="num">${pct(r.share)}${flag(r)}</td><td class="num">${cval('pov3', r.code)}</td><td class="num">${cval('food', r.code)}</td><td class="num">${cval('hygiene', r.code)}</td></tr>`).join('');
+  const yrs = [...new Set(Object.values(ctx.pov3).map(x => x.year))].sort().join('/');
+  $('#resultMeta').innerHTML = `Reached, target and women's share: Scorecard corporate results, FY25 (30 June 2025). Context: Scorecard vision indicators, latest available year (poverty ${yrs}; food insecurity ${ctx.food.ACW.year}; basic hygiene ${ctx.hygiene.ACW.year}). ` +
+    (t.womenSub ? 'For financial services, the total counts people <em>and businesses</em>; the women figure counts women customers, so the share is indicative only.' : '');
+  // callout – computed, not hard-coded
+  const hs = REG_ORDER.map(c => ({ c, ...resultRow('CSC_RES_HEA_SERV', c) }));
+  const sar = hs.find(x => x.c === 'SAR');
+  const topR = hs.reduce((a, b) => a.reached > b.reached ? a : b);
+  const topHyg = ctx.hygiene[topR.c], worldHyg = ctx.hygiene.ACW;
+  const allH = resultRow('CSC_RES_HEA_SERV', 'ACW');
+  $('#resultCallout').innerHTML = `<strong>${fmtM(allH.reached)} people</strong> have been reached with health, nutrition and population services so far, ${pct(allH.progress)} of the ${fmtM(allH.expected)} target. Two things stand out. First, in <strong>South Asia only ${pct(sar.share)} of the ${fmtM(sar.reached)} people reached are recorded as women</strong>. For population-wide health services that almost certainly reflects missing sex-disaggregated reporting, not a real gap, and it is the kind of measurement problem section 04 investigates. Second, the region with the largest health caseload, ${esc(DATA.regions[topR.c])} (${pct(topR.reached / allH.reached)} of everyone reached), has the weakest basics: <strong>only ${topHyg.value.toFixed(1)}% of people have basic hygiene services</strong>, against ${worldHyg.value.toFixed(1)}% worldwide (${topHyg.year}).`;
+}
+
+// ---------------------------------------------------------------- 02 themes
+let themeSel = 'health_workforce';
+function renderThemes() {
+  const T = DATA.themes;
+  $('#themeCards').innerHTML = T.summary.map(s => {
+    const v = s.validation;
+    const prec = v.precision == null ? 'not reviewed' : `precision ${v.correct}/${v.reviewed}` + (v.v1_precision != null && v.v1_precision !== v.precision ? ` (v1: ${pct(v.v1_precision)})` : '');
+    return `<div class="tcard ${s.key === themeSel ? 'active' : ''}" data-k="${s.key}" tabindex="0" role="button" aria-pressed="${s.key === themeSel}">
+      <div class="tl">${esc(s.label)}</div>
+      <div class="tn">${s.projects} <small>projects &middot; ${pct(s.share, 1)}</small></div>
+      <div class="tp">${prec}</div></div>`;
+  }).join('');
+  document.querySelectorAll('.tcard').forEach(c => {
+    const go = () => { themeSel = c.dataset.k; renderThemes(); };
+    c.onclick = go; c.onkeydown = e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); go(); } };
+  });
+  const S = k => T.summary.find(x => x.key === k);
+  const mig = T.projects.filter(p => p.themes.includes('migration'));
+  const lm = mig.filter(p => /labou?r mobility|migrant work|remittance/i.test(p.evidence.migration)), labourMob = lm.length;
+  $('#themeCallout').innerHTML = `<strong>The health workforce barely appears in the portfolio's measured results.</strong> Only <strong>${S('health_workforce').projects} of ${fmtInt(T.n_projects)} projects</strong> report an indicator about health workers, and just <strong>${T.health_workforce_and_jobs}</strong> of those also carry a jobs or skills indicator. Among the ${S('migration').projects} projects tagged for migration and displacement, the evidence is almost entirely about refugees, IDPs and host communities. ${labourMob === 0 ? 'None concern labour mobility.' : `Only ${labourMob} concern${labourMob === 1 ? 's' : ''} labour mobility (${lm.map(p => esc(p.name) + ', ' + esc(p.country)).join('; ')}, which tracks short-term migrant workers, the closest thing in the portfolio to a Global Skill Partnership).`} <strong>${T.health_workforce_and_migration} projects</strong> link health workers to migration. Menstrual health appears in <strong>${S('menstrual').projects}</strong>.`;
+  const pills = $('#themePills');
+  pills.innerHTML = `<button class="pill ${themeSel === 'all' ? 'active' : ''}" data-k="all">all tagged</button>` +
+    T.summary.map(s => `<button class="pill ${s.key === themeSel ? 'active' : ''}" data-k="${s.key}">${esc(s.label)}</button>`).join('');
+  pills.querySelectorAll('.pill').forEach(b => b.onclick = () => { themeSel = b.dataset.k; renderThemes(); });
+  renderProjTable();
+}
+function highlight(snip, key) {
+  const pats = DATA.themes.summary.find(s => s.key === key).patterns;
+  let out = esc(snip);
+  for (const p of pats) {
+    try {
+      const re = new RegExp(p.replace(/\(\?<!.*?\)/g, ''), 'i');
+      const m = snip.match(re);
+      if (m) { const e = esc(m[0]); out = out.replace(e, `<mark>${e}</mark>`); break; }
+    } catch (e) {}
+  }
+  return out;
+}
+function renderProjTable() {
+  const T = DATA.themes, q = $('#projSearch').value.trim().toLowerCase();
+  const label = k => T.summary.find(s => s.key === k).label;
+  let rows = T.projects.filter(p => themeSel === 'all' ? p.themes.length : p.themes.includes(themeSel));
+  if (q) rows = rows.filter(p => (p.name + ' ' + p.country + ' ' + Object.values(p.evidence).join(' ')).toLowerCase().includes(q));
+  const showKey = p => themeSel === 'all' ? p.themes[0] : themeSel;
+  $('#projTable tbody').innerHTML = rows.slice(0, 400).map(p => `<tr>
+    <td><strong style="font-weight:600">${esc(p.name)}</strong><br><span style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--ink-faint)">${esc(p.id)}${p.fcv ? ' &middot; FCS' : ''}</span></td>
+    <td>${esc(p.country)}</td>
+    <td>${p.themes.map(k => `<span class="tchip">${esc(label(k))}</span>`).join('')}</td>
+    <td class="ev">${highlight(p.evidence[showKey(p)], showKey(p))}</td></tr>`).join('') ||
+    `<tr><td colspan="4" style="color:var(--ink-faint);text-align:center;padding:24px">No projects match.</td></tr>`;
+  $('#projMeta').textContent = `${rows.length} project${rows.length === 1 ? '' : 's'}${rows.length > 400 ? ' (first 400 shown)' : ''}. Evidence is the first phrase in the project's objective or indicators that matched a rule for the theme.`;
+}
+$('#projSearch').addEventListener('input', renderProjTable);
+
+// ---------------------------------------------------------------- 03 model
+let fairSel = 'region';
+function renderModel() {
+  const M = DATA.model;
+  const nm = { logit: ['Logistic regression', 'interpretable, regularised'], gbm: ['Gradient boosting', 'shallow trees, captures interactions'] };
+  $('#modelBoxes').innerHTML = ['logit', 'gbm'].map(k => `<div class="model-box ${k === M.best ? 'winner' : ''}">
+      <div class="mt">${nm[k][0]}${k === M.best ? ' &middot; selected' : ''}</div>
+      <div class="big">${M.models[k].auc.toFixed(2)} <span style="font-size:14px;font-weight:400;color:var(--ink-faint)">AUC</span></div>
+      <div class="desc">${nm[k][1]} &middot; balanced accuracy ${M.models[k].bal_acc.toFixed(2)} &middot; Brier ${M.models[k].brier.toFixed(3)}</div></div>`).join('') +
+    `<div class="model-box"><div class="mt">Sample</div><div class="big">${fmtInt(M.n)}</div><div class="desc">results from ${fmtInt(M.projects)} projects &middot; ${pct(M.behind_rate)} flagged behind &middot; 5-fold CV grouped by project</div></div>`;
+  mk('impChart', {
+    type: 'bar',
+    data: { labels: M.importance.map(x => x.feature), datasets: [{ data: M.importance.map(x => x.value), backgroundColor: css('--s1'), ...bar }] },
+    options: baseOpts({ indexAxis: 'y', plugins: { legend: { display: false }, tooltip: Object.assign(baseOpts().plugins.tooltip, { displayColors: false, callbacks: { label: c => ` AUC drop when shuffled: ${c.raw.toFixed(3)}` } }) },
+      scales: { x: { grid: { color: css('--grid') }, border: { display: false }, ticks: { color: css('--ink-faint') } }, y: { grid: { display: false }, border: { display: false }, ticks: { color: css('--ink-soft'), font: { size: 11 } } } } })
+  });
+  mk('ageChart', {
+    type: 'bar',
+    data: { labels: M.by_age.map(x => x.bin), datasets: [{ data: M.by_age.map(x => x.rate * 100), backgroundColor: css('--s1'), ...bar, maxBarThickness: 48 }] },
+    options: baseOpts({ plugins: { legend: { display: false }, tooltip: Object.assign(baseOpts().plugins.tooltip, { displayColors: false, callbacks: { label: c => ` ${c.raw.toFixed(0)}% behind (n = ${M.by_age[c.dataIndex].n})` } }) },
+      scales: { x: { grid: { display: false }, border: { display: false }, ticks: { color: css('--ink-soft') } }, y: { min: 0, max: 100, grid: { color: css('--grid') }, border: { display: false }, ticks: { color: css('--ink-faint'), callback: v => v + '%' } } } })
+  });
+  const a0 = M.by_age[0], a3 = M.by_age[M.by_age.length - 1];
+  const topF = M.importance[0].feature.toLowerCase();
+  $('#ageCallout').innerHTML = `<strong>Results arrive late.</strong> ${pct(a0.rate)} of results from projects approved less than 3 years ago trail a straight-line schedule, against ${pct(a3.rate)} for projects 7+ years old. The model's most important feature is ${esc(topF)}. So a &ldquo;behind&rdquo; flag on a young project is weak evidence of trouble. The useful signal is a project that is behind <em>relative to others of the same age and type</em>, which is what the model's predicted probability captures.`;
+  mk('deptChart', {
+    type: 'bar',
+    data: { labels: M.by_dept.map(x => x.dept), datasets: [{ data: M.by_dept.map(x => x.rate * 100), backgroundColor: css('--s1'), ...bar }] },
+    options: baseOpts({ indexAxis: 'y', plugins: { legend: { display: false }, tooltip: Object.assign(baseOpts().plugins.tooltip, { displayColors: false, callbacks: { label: c => ` ${c.raw.toFixed(0)}% behind (n = ${M.by_dept[c.dataIndex].n})` } }) },
+      scales: { x: { min: 0, max: 100, grid: { color: css('--grid') }, border: { display: false }, ticks: { color: css('--ink-faint'), callback: v => v + '%' } }, y: { grid: { display: false }, border: { display: false }, ticks: { color: css('--ink-soft'), font: { family: "'IBM Plex Mono', monospace", size: 11 } } } } })
+  });
+  mk('calChart', {
+    type: 'scatter',
+    data: { datasets: [
+      { type: 'line', data: [{ x: 0, y: 0 }, { x: 100, y: 100 }], borderColor: css('--ink-faint'), borderDash: [5, 4], borderWidth: 1.5, pointRadius: 0 },
+      { data: M.calibration.map(c => ({ x: c.pred * 100, y: c.obs * 100, n: c.n })), backgroundColor: css('--s1'), borderColor: css('--paper-raised'), borderWidth: 2, pointRadius: 6, pointHoverRadius: 8 }
+    ] },
+    options: baseOpts({ plugins: { legend: { display: false }, tooltip: Object.assign(baseOpts().plugins.tooltip, { displayColors: false, filter: i => i.datasetIndex === 1, callbacks: { label: c => ` predicted ${c.raw.x.toFixed(0)}% · observed ${c.raw.y.toFixed(0)}% (n = ${c.raw.n})` } }) },
+      scales: { x: { min: 0, max: 100, title: { display: true, text: 'Predicted probability of "behind"', color: css('--ink-faint') }, grid: { color: css('--grid') }, border: { display: false }, ticks: { callback: v => v + '%' } },
+                y: { min: 0, max: 100, title: { display: true, text: 'Observed share behind', color: css('--ink-faint') }, grid: { color: css('--grid') }, border: { display: false }, ticks: { color: css('--ink-faint'), callback: v => v + '%' } } } })
+  });
+  const fp = $('#fairPills');
+  const lab = { region: 'by region', fcv: 'by FCS status', income: 'by income group' };
+  fp.innerHTML = Object.keys(lab).map(k => `<button class="pill ${k === fairSel ? 'active' : ''}" data-k="${k}">${lab[k]}</button>`).join('');
+  fp.querySelectorAll('.pill').forEach(b => b.onclick = () => { fairSel = b.dataset.k; renderModel(); });
+  const incomeNames = { LIC: 'Low income', LMC: 'Lower-middle income', UMC: 'Upper-middle income', HIC: 'High income' };
+  const rows = M.fairness[fairSel];
+  const minA = Math.min(...rows.map(r => r.auc));
+  $('#fairTable tbody').innerHTML = rows.map(r => `<tr><td>${esc(incomeNames[r.group] || r.group)}${r.auc === minA && rows.length > 2 ? ' <span class="tag chk">weakest</span>' : ''}</td>
+    <td class="num">${fmtInt(r.n)}</td><td class="num">${pct(r.behind_rate)}</td><td class="num">${pct(r.predicted_rate)}</td><td class="num">${r.auc.toFixed(2)}</td><td class="num">${pct(r.fnr)}</td></tr>`).join('');
+  const reg = M.fairness.region, worst = reg.reduce((a, b) => a.auc < b.auc ? a : b), best = reg.reduce((a, b) => a.auc > b.auc ? a : b);
+  const fcv = M.fairness.fcv.find(x => x.group.startsWith('Fragile')), nf = M.fairness.fcv.find(x => x.group === 'Not FCV');
+  $('#fairCallout').innerHTML = `<strong>Predicted rates track observed rates in every subgroup</strong>, so no group is systematically over- or under-flagged. <strong>Ranking quality is uneven, though.</strong> AUC ranges from ${best.auc.toFixed(2)} (${esc(best.group)}) down to ${worst.auc.toFixed(2)} (${esc(worst.group)}), where the miss rate is ${pct(worst.fnr)}. It is also lower in fragile settings (${fcv.auc.toFixed(2)} vs ${nf.auc.toFixed(2)}). In practice, flags in ${esc(worst.group)} and FCS portfolios need more human review before they drive decisions.`;
+}
+
+// ---------------------------------------------------------------- 04 gender
+function renderGender() {
+  const A = DATA.gender_audit, P = DATA.psm;
+  $('#auditPairs').textContent = fmtInt(A.pairs);
+  const steps = [
+    ['Women\'s figure derived from a fixed share', A.imputed],
+    ['No progress reported yet', A.no_progress_yet],
+    ['Women-only result (100% planned & achieved)', A.women_only],
+    ['Share identical by construction', A.identical_share],
+    ['Internally inconsistent (share > 100%)', A.inconsistent],
+    ['Informative: women counted directly', A.informative]
+  ];
+  mk('auditChart', {
+    type: 'bar',
+    data: { labels: steps.map(s => s[0]), datasets: [{ data: steps.map(s => s[1]), backgroundColor: steps.map((s, i) => i === steps.length - 1 ? css('--s2') : css('--muted-mark')), ...bar }] },
+    options: baseOpts({ indexAxis: 'y', plugins: { legend: { display: false }, tooltip: Object.assign(baseOpts().plugins.tooltip, { displayColors: false, callbacks: { label: c => ` ${fmtInt(c.raw)} results (${pct(c.raw / A.pairs)} of ${fmtInt(A.pairs)})` } }) },
+      scales: { x: { grid: { color: css('--grid') }, border: { display: false }, ticks: { color: css('--ink-faint') } }, y: { grid: { display: false }, border: { display: false }, ticks: { color: css('--ink-soft'), font: { size: 11.5 } } } } })
+  });
+  const pts = P.points;
+  const ds = (f, col) => ({ data: pts.filter(p => p.fcv === f).map(p => ({ x: p.e * 100, y: p.a * 100, p })), backgroundColor: col, borderColor: css('--paper-raised'), borderWidth: 1.5, pointRadius: 5, pointHoverRadius: 7 });
+  mk('gapScatter', {
+    type: 'scatter',
+    data: { datasets: [
+      { type: 'line', data: [{ x: 0, y: 0 }, { x: 100, y: 100 }], borderColor: css('--ink-faint'), borderDash: [5, 4], borderWidth: 1.5, pointRadius: 0 },
+      ds(0, css('--s1')), ds(1, css('--s2'))
+    ] },
+    options: baseOpts({ plugins: { legend: { display: false }, tooltip: Object.assign(baseOpts().plugins.tooltip, { filter: i => i.datasetIndex > 0, callbacks: {
+        title: items => items[0].raw.p.name, label: c => { const p = c.raw.p; return [` ${p.country}${p.fcv ? ' (FCS)' : ''} · ${DATA.subs[p.sub] || p.sub}`, ` planned ${c.raw.x.toFixed(0)}% women → achieved ${c.raw.y.toFixed(0)}%`]; } } }) },
+      scales: { x: { min: 0, max: 100, title: { display: true, text: 'Planned share of women', color: css('--ink-faint') }, grid: { color: css('--grid') }, border: { display: false }, ticks: { callback: v => v + '%' } },
+                y: { min: 0, max: 100, title: { display: true, text: 'Achieved share of women', color: css('--ink-faint') }, grid: { color: css('--grid') }, border: { display: false }, ticks: { color: css('--ink-faint'), callback: v => v + '%' } } } })
+  });
+  const subs = P.by_sub.slice().sort((a, b) => a.mean - b.mean);
+  mk('subChart', {
+    type: 'bar',
+    data: { labels: subs.map(s => s.label), datasets: [{ data: subs.map(s => s.mean), backgroundColor: css('--s1'), ...bar, borderSkipped: false, maxBarThickness: 26 }] },
+    options: baseOpts({ indexAxis: 'y', plugins: { legend: { display: false }, tooltip: Object.assign(baseOpts().plugins.tooltip, { displayColors: false, callbacks: { label: c => ` mean ${c.raw > 0 ? '+' : ''}${c.raw.toFixed(1)} pp · median ${subs[c.dataIndex].median.toFixed(1)} pp (n = ${subs[c.dataIndex].n})` } }) },
+      scales: { x: { grid: { color: c => c.tick.value === 0 ? css('--ink-faint') : css('--grid') }, border: { display: false }, ticks: { color: css('--ink-faint'), callback: v => (v > 0 ? '+' : '') + v + ' pp' } },
+                y: { grid: { display: false }, border: { display: false }, ticks: { color: css('--ink-soft'), font: { size: 11 }, callback: function (v) { const l = this.getLabelForValue(v); return l.length > 26 ? l.split(' ').reduce((acc, w) => { const last = acc[acc.length - 1]; if ((last + ' ' + w).trim().length > 24) acc.push(w); else acc[acc.length - 1] = (last + ' ' + w).trim(); return acc; }, ['']) : l; } } } } })
+  });
+  const h = P.by_sub.find(s => s.sub === 'CSC_RES_HEA_SERV');
+  $('#subCallout').innerHTML = `Across the ${fmtInt(P.n)} informative results, the typical gap is close to zero (median ${P.median_gap > 0 ? '+' : ''}${P.median_gap.toFixed(1)} pp). The exception is <strong>health, nutrition &amp; population services, where women's achieved share runs ${Math.abs(h.mean).toFixed(1)} points below plan on average</strong> (median ${h.median.toFixed(1)} pp). It rests on only ${h.n} results, so read it as a signal to investigate, not a finding. Also note that <strong>${pct(A.imputed / A.pairs)} of paired results derive the women's figure from a fixed share</strong>. For those, a gender gap is invisible by design.`;
+  $('#psmBox').innerHTML = `
+    <div><div class="mt">Matched difference (FCS − matched non-FCS) <span class="tag est">Model estimate</span></div><div class="big">${P.att > 0 ? '+' : ''}${P.att.toFixed(1)} pp</div>
+      <div class="desc">95% CI ${P.ci[0].toFixed(1)} to ${P.ci[1] > 0 ? '+' : ''}${P.ci[1].toFixed(1)} pp &middot; bootstrap over projects (2,000 draws)</div></div>
+    <div><div class="mt">Unmatched difference</div><div class="big">${P.naive > 0 ? '+' : ''}${P.naive.toFixed(1)} pp</div>
+      <div class="desc">raw FCS vs. all non-FCS, before adjusting for region, income and project mix</div></div>
+    <div><div class="mt">Sample</div><div class="big">${P.matched_treated} &harr; ${P.unique_controls}</div>
+      <div class="desc">FCS results matched (all ${P.treated}) to ${P.unique_controls} distinct non-FCS results &middot; 1:1 nearest neighbour with replacement, caliper ${P.caliper} SD of the logit</div></div>`;
+  const imb = P.balance.filter(b => Math.abs(b.after) > 0.1).map(b => `${b.covariate.toLowerCase()} (${b.after.toFixed(2)})`);
+  $('#psmCallout').innerHTML = `<strong>No detectable difference.</strong> Once FCS results are compared with similar non-FCS results, the gap is ${P.att > 0 ? '+' : ''}${P.att.toFixed(1)} pp, and the 95% interval runs from ${P.ci[0].toFixed(1)} to +${P.ci[1].toFixed(1)} pp. That's too wide to rule out a moderate effect either way. Matching shrinks the raw difference (${P.naive.toFixed(1)} pp), mostly by balancing region and income. ${imb.length ? `Balance remains imperfect on ${imb.join(' and ')}.` : ''} Without the caliper the estimate is unchanged (${P.att_no_caliper.toFixed(1)} pp). The honest conclusion: <strong>the data the Bank Group reports give no evidence that fragility widens the gender delivery gap, but they cannot rule it out either. The bigger obstacle to answering the question is that women are often not counted directly.</strong>`;
+  const covs = P.balance.map(b => b.covariate);
+  const band = { id: 'band', beforeDatasetsDraw(ch) { const { ctx, chartArea: a, scales: { x } } = ch; ctx.save(); ctx.fillStyle = css('--teal-soft'); ctx.fillRect(x.getPixelForValue(-0.1), a.top, x.getPixelForValue(0.1) - x.getPixelForValue(-0.1), a.bottom - a.top); ctx.restore(); } };
+  mk('balChart', {
+    type: 'scatter',
+    data: { datasets: [
+      { label: 'Before', data: P.balance.map((b, i) => ({ x: b.before, y: i })), backgroundColor: css('--muted-mark'), pointRadius: 6, pointHoverRadius: 8, borderColor: css('--paper-raised'), borderWidth: 1.5 },
+      { label: 'After', data: P.balance.map((b, i) => ({ x: b.after, y: i })), backgroundColor: css('--s1'), pointRadius: 6, pointHoverRadius: 8, borderColor: css('--paper-raised'), borderWidth: 1.5 }
+    ] },
+    plugins: [band],
+    options: baseOpts({ plugins: { legend: { display: false }, tooltip: Object.assign(baseOpts().plugins.tooltip, { callbacks: { title: i => covs[i[0].raw.y], label: c => ` ${c.dataset.label} matching: SMD ${c.raw.x.toFixed(2)}` } }) },
+      scales: { x: { min: -1, max: 1, grid: { color: c => c.tick.value === 0 ? css('--ink-faint') : css('--grid') }, border: { display: false }, ticks: { color: css('--ink-faint') }, title: { display: true, text: 'Standardised mean difference (FCS − non-FCS)', color: css('--ink-faint') } },
+                y: { min: -0.5, max: covs.length - 0.5, reverse: true, grid: { display: false }, border: { display: false }, afterBuildTicks: ax => { ax.ticks = covs.map((_, i) => ({ value: i })); }, ticks: { color: css('--ink-soft'), font: { size: 11 }, callback: v => covs[v] } } } })
+  });
+}
+
+function renderAll() { renderHero(); renderResults(); renderThemes(); renderModel(); renderGender(); }
+renderAll();
+</script>
+</body>
+</html>

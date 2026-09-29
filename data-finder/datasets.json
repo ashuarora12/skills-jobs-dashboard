@@ -1,0 +1,854 @@
+{
+ "checked_on": "2026-09-29",
+ "levels": {
+  "country": 1,
+  "state": 2,
+  "region": 2.5,
+  "district": 3,
+  "micro": 4
+ },
+ "level_labels": {
+  "country": "Country",
+  "state": "State",
+  "region": "NSS region (sub-state)",
+  "district": "District",
+  "micro": "Village, facility or geocoded household"
+ },
+ "themes": {
+  "financing": "Health financing & access",
+  "mch_gender": "Maternal & child health, gender",
+  "migration_workforce": "Migration, labour & health workforce",
+  "ageing": "Ageing & chronic disease",
+  "geo": "Geospatial & linkable data"
+ },
+ "designs": {
+  "panel_fe": {
+   "label": "Panel / fixed effects",
+   "note": "Follow the same households or people over time; within-unit change removes time-invariant confounders."
+  },
+  "did_rcs": {
+   "label": "Difference-in-differences with repeated cross-sections",
+   "note": "Compare changes across places exposed to a policy at different times; needs consistent geography across rounds."
+  },
+  "its_admin": {
+   "label": "Interrupted time series / event study on administrative data",
+   "note": "High-frequency records around a rollout date; watch reporting changes and seasonality."
+  },
+  "spatial": {
+   "label": "Spatial / geospatial linkage",
+   "note": "Link outcomes to location-based exposures (distance, night lights, climate); respect coordinate displacement."
+  },
+  "cross_country": {
+   "label": "Cross-country comparison",
+   "note": "Country-year panels for benchmarking; harmonised definitions but few observations per country."
+  },
+  "descriptive": {
+   "label": "Descriptive monitoring",
+   "note": "Levels and trends for targeting and benchmarking; not causal on its own."
+  }
+ },
+ "datasets": [
+  {
+   "id": "nfhs",
+   "name": "National Family Health Survey (NFHS)",
+   "custodian": "IIPS for the Ministry of Health and Family Welfare",
+   "scope": "India",
+   "themes": [
+    "mch_gender"
+   ],
+   "structure": "Repeated cross-section (household, women, men, children)",
+   "level": "district",
+   "rounds": "NFHS-1 1992–93 · NFHS-2 1998–99 · NFHS-3 2005–06 · NFHS-4 2015–16 · NFHS-5 2019–21 · NFHS-6 2023–24",
+   "latest": "NFHS-6 (fieldwork May 2023–Dec 2024); state fact sheets released May 2026, district fact sheets August 2026",
+   "sex": "yes",
+   "modules": [
+    "maternal & child health",
+    "nutrition & anaemia",
+    "women's empowerment",
+    "insurance"
+   ],
+   "access": "registration",
+   "access_note": "Fact sheets and reports open; unit-level data for earlier rounds through the DHS Program (registration). NFHS-6 unit-level release: to verify.",
+   "url": "https://www.nfhsiips.in/nfhsuser/release-details.php",
+   "designs": [
+    "did_rcs",
+    "descriptive",
+    "spatial"
+   ],
+   "what": "India's flagship demographic and health survey, representative at district level since NFHS-4.",
+   "cautions": [
+    "Infant mortality from NFHS is based on 5-year birth histories and is not directly comparable with annual SRS rates.",
+    "District estimates carry wide confidence intervals; district boundaries change between rounds.",
+    "NFHS-5 fieldwork was split before and during COVID-19."
+   ],
+   "status": "checked",
+   "evidence": "https://www.nfhsiips.in/nfhsuser/release-details.php"
+  },
+  {
+   "id": "srs",
+   "name": "Sample Registration System (SRS)",
+   "custodian": "Office of the Registrar General & Census Commissioner, India",
+   "scope": "India",
+   "themes": [
+    "mch_gender"
+   ],
+   "structure": "Aggregate vital rates from continuous registration in sample units",
+   "level": "state",
+   "rounds": "Annual statistical reports; maternal mortality special bulletins pooled over three years",
+   "latest": "Special Bulletin on Maternal Mortality 2020–22 (published June 2025)",
+   "sex": "partial",
+   "modules": [
+    "births & deaths",
+    "infant, child & maternal mortality"
+   ],
+   "access": "open",
+   "access_note": "Reports and bulletins open through the Census of India data catalogue.",
+   "url": "https://censusindia.gov.in/nada/index.php/catalog/45569",
+   "designs": [
+    "descriptive",
+    "its_admin"
+   ],
+   "what": "The official source for annual infant mortality and three-year maternal mortality ratios by state.",
+   "cautions": [
+    "Maternal mortality is reported only for larger states and state groups.",
+    "Three-year pooling smooths short-run changes; not available by district."
+   ],
+   "status": "checked",
+   "evidence": "https://censusindia.gov.in/nada/index.php/catalog/45569"
+  },
+  {
+   "id": "nss_health",
+   "name": "NSS: Household Social Consumption on Health",
+   "custodian": "National Statistics Office, MoSPI",
+   "scope": "India",
+   "themes": [
+    "financing",
+    "ageing"
+   ],
+   "structure": "Repeated cross-section, unit-level (household, person)",
+   "level": "region",
+   "rounds": "60th round 2004 · 71st 2014 · 75th 2017–18 · 80th Jan–Dec 2025",
+   "latest": "80th round (January–December 2025), report released",
+   "sex": "yes",
+   "modules": [
+    "out-of-pocket spending",
+    "hospitalisation",
+    "insurance coverage",
+    "morbidity"
+   ],
+   "access": "registration",
+   "access_note": "Unit-level data through the national microdata portal (registration). 80th-round unit-level release: to verify.",
+   "url": "https://microdata.gov.in/",
+   "designs": [
+    "did_rcs",
+    "descriptive"
+   ],
+   "what": "The main source for out-of-pocket and catastrophic health spending, hospitalisation and insurance in India.",
+   "cautions": [
+    "Recall periods differ (15 days for outpatient care, 365 days for hospitalisation).",
+    "Questionnaire changes between rounds affect comparability; sub-state estimates are limited to NSS regions."
+   ],
+   "status": "checked",
+   "evidence": "https://mospi.gov.in/uploads/publications_reports/publications_reports1776676412084_2b4f2b5c-2f1c-446b-8fa3-ec8f125b2b66_Final_Report_no_596_Health_(2).pdf"
+  },
+  {
+   "id": "hces",
+   "name": "Household Consumption Expenditure Survey (HCES)",
+   "custodian": "National Statistics Office, MoSPI",
+   "scope": "India",
+   "themes": [
+    "financing"
+   ],
+   "structure": "Cross-section, unit-level (household)",
+   "level": "region",
+   "rounds": "2011–12 (68th round) · 2022–23 · 2023–24",
+   "latest": "HCES 2023–24; report and unit-level data released",
+   "sex": "partial",
+   "modules": [
+    "consumption",
+    "medical spending"
+   ],
+   "access": "registration",
+   "access_note": "Unit-level data through the national microdata portal (registration).",
+   "url": "https://microdata.gov.in/NADA/index.php/catalog/237",
+   "designs": [
+    "descriptive",
+    "did_rcs"
+   ],
+   "what": "Household consumption, including medical spending, for poverty and health-spending burden measures.",
+   "cautions": [
+    "The 2022–23 and 2023–24 rounds use a revised multi-visit design and are not directly comparable with 2011–12.",
+    "Medical spending here is a budget share, not an episode-level cost as in the NSS health rounds."
+   ],
+   "status": "checked",
+   "evidence": "https://microdata.gov.in/NADA/index.php/catalog/237"
+  },
+  {
+   "id": "plfs",
+   "name": "Periodic Labour Force Survey (PLFS)",
+   "custodian": "National Statistics Office, MoSPI",
+   "scope": "India",
+   "themes": [
+    "migration_workforce"
+   ],
+   "structure": "Repeated cross-section with an urban rotational panel",
+   "level": "district",
+   "rounds": "Annual from 2017–18; redesigned from January 2025 with the district as the basic stratum; migration module 2020–21",
+   "latest": "District-level estimates first released September 2026 (PLFS January–December 2025)",
+   "sex": "yes",
+   "modules": [
+    "employment",
+    "wages",
+    "migration (2020–21)",
+    "occupation incl. health workers"
+   ],
+   "access": "registration",
+   "access_note": "Unit-level data through the national microdata portal (registration).",
+   "url": "https://microdata.gov.in/NADA/index.php/catalog/PLFS",
+   "designs": [
+    "did_rcs",
+    "panel_fe",
+    "descriptive"
+   ],
+   "what": "India's main labour-market survey; district-representative since the 2025 redesign.",
+   "cautions": [
+    "The 2025 redesign creates a break in the series.",
+    "The urban panel follows households for only four quarters.",
+    "District estimates are available only from 2025."
+   ],
+   "status": "checked",
+   "evidence": "https://www.mospi.gov.in/sites/default/files/publication_reports/PLFS_Changes-in-2025_rev.pdf"
+  },
+  {
+   "id": "nss64",
+   "name": "NSS 64th round: Employment, Unemployment and Migration",
+   "custodian": "National Statistics Office, MoSPI",
+   "scope": "India",
+   "themes": [
+    "migration_workforce"
+   ],
+   "structure": "Cross-section, unit-level (household, person)",
+   "level": "region",
+   "rounds": "July 2007–June 2008 (125,578 households)",
+   "latest": "Report No. 533, Migration in India 2007–2008",
+   "sex": "yes",
+   "modules": [
+    "migration",
+    "remittances",
+    "employment"
+   ],
+   "access": "registration",
+   "access_note": "Unit-level data through the national microdata portal (registration).",
+   "url": "https://www.mospi.gov.in/sites/default/files/publication_reports/533_final.pdf",
+   "designs": [
+    "descriptive"
+   ],
+   "what": "The detailed pre-2020 baseline for internal migration and remittances in India.",
+   "cautions": [
+    "Migration is defined by change in usual place of residence, which differs from the Census definition (place of last residence)."
+   ],
+   "status": "checked",
+   "evidence": "https://www.mospi.gov.in/sites/default/files/publication_reports/533_final.pdf"
+  },
+  {
+   "id": "lasi",
+   "name": "Longitudinal Ageing Study in India (LASI)",
+   "custodian": "IIPS with Harvard T.H. Chan School of Public Health and USC",
+   "scope": "India",
+   "themes": [
+    "ageing",
+    "financing"
+   ],
+   "structure": "Panel (adults aged 45+ and spouses)",
+   "level": "state",
+   "rounds": "Wave 1 2017–18 (73,000+ adults) · Wave 2 fieldwork 2024–25",
+   "latest": "Wave 1 public; wave 2 release status to verify",
+   "sex": "yes",
+   "modules": [
+    "chronic disease & biomarkers",
+    "health spending & insurance",
+    "work & pensions",
+    "functional health"
+   ],
+   "access": "registration",
+   "access_note": "Through IIPS and the Gateway to Global Aging Data (registration).",
+   "url": "https://www.iipsindia.ac.in/lasi",
+   "designs": [
+    "panel_fe",
+    "descriptive"
+   ],
+   "what": "State-representative panel of older adults, harmonised with the HRS family of ageing studies.",
+   "cautions": [
+    "Panel analysis requires wave 2; check release status.",
+    "LASI-DAD (dementia sub-study) is a separate, smaller sample."
+   ],
+   "status": "to_verify",
+   "evidence": "https://www.iipsindia.ac.in/lasi"
+  },
+  {
+   "id": "ihds",
+   "name": "India Human Development Survey (IHDS)",
+   "custodian": "NCAER and University of Maryland",
+   "scope": "India",
+   "themes": [
+    "financing",
+    "migration_workforce",
+    "mch_gender"
+   ],
+   "structure": "Panel (households)",
+   "level": "district",
+   "rounds": "IHDS-1 2004–05 · IHDS-2 2011–12 · IHDS-3 2022–23",
+   "latest": "IHDS-3 fieldwork 2022–23; public release status to verify",
+   "sex": "yes",
+   "modules": [
+    "morbidity & health spending",
+    "gender relations",
+    "migration",
+    "income & employment"
+   ],
+   "access": "registration",
+   "access_note": "Through ICPSR (free account).",
+   "url": "https://ihds.umd.edu/data",
+   "designs": [
+    "panel_fe",
+    "did_rcs"
+   ],
+   "what": "India's only national household panel covering health, gender, income and migration together.",
+   "cautions": [
+    "Attrition and household splits need handling.",
+    "District identifiers follow 2011 boundaries."
+   ],
+   "status": "checked",
+   "evidence": "https://ncaer.org/project/india-human-development-survey-round-3-ihds-3/"
+  },
+  {
+   "id": "hmis",
+   "name": "Health Management Information System (HMIS)",
+   "custodian": "Ministry of Health and Family Welfare",
+   "scope": "India",
+   "themes": [
+    "mch_gender"
+   ],
+   "structure": "Administrative, monthly facility reporting",
+   "level": "micro",
+   "rounds": "District-level reporting from October 2008; facility-level from 2010–11",
+   "latest": "Monthly, ongoing",
+   "sex": "partial",
+   "modules": [
+    "maternal & child services",
+    "immunisation",
+    "family planning",
+    "hospital services"
+   ],
+   "access": "open",
+   "access_note": "Standard reports and downloads open on the HMIS portal.",
+   "url": "https://hmis.mohfw.gov.in/",
+   "designs": [
+    "its_admin",
+    "did_rcs",
+    "descriptive"
+   ],
+   "what": "Service-delivery records from public facilities, ideal for high-frequency analysis around programme rollouts.",
+   "cautions": [
+    "Counts of services delivered, not population rates; denominators must be estimated.",
+    "Mostly public facilities; reporting completeness varies by state and year."
+   ],
+   "status": "checked",
+   "evidence": "https://hmis.mohfw.gov.in/"
+  },
+  {
+   "id": "nha",
+   "name": "National Health Accounts Estimates (NHA)",
+   "custodian": "National Health Systems Resource Centre, MoHFW",
+   "scope": "India",
+   "themes": [
+    "financing"
+   ],
+   "structure": "Aggregate annual accounts",
+   "level": "country",
+   "rounds": "Annual estimates 2013–14 to 2022–23 (10th edition)",
+   "latest": "NHA 2022–23: out-of-pocket spending 43.4% of total health expenditure (39.4% in 2021–22)",
+   "sex": "no",
+   "modules": [
+    "total, government and out-of-pocket health spending"
+   ],
+   "access": "open",
+   "access_note": "Reports open.",
+   "url": "https://www.pib.gov.in/PressReleasePage.aspx?PRID=2265816&lang=1&reg=3",
+   "designs": [
+    "descriptive",
+    "cross_country"
+   ],
+   "what": "India's official health-spending accounts, following the System of Health Accounts framework.",
+   "cautions": [
+    "Methods are revised between editions; use the latest edition's back-series for trends.",
+    "Out-of-pocket estimates draw partly on NSS and HCES surveys."
+   ],
+   "status": "checked",
+   "evidence": "https://www.pib.gov.in/PressReleasePage.aspx?PRID=2265816&lang=1&reg=3"
+  },
+  {
+   "id": "hdi_mohfw",
+   "name": "Health Dynamics of India (formerly Rural Health Statistics)",
+   "custodian": "Ministry of Health and Family Welfare",
+   "scope": "India",
+   "themes": [
+    "migration_workforce"
+   ],
+   "structure": "Administrative, annual",
+   "level": "district",
+   "rounds": "Published annually since 1992",
+   "latest": "Health Dynamics of India (Infrastructure and Human Resources) 2022–23, facilities as of 31 March 2023",
+   "sex": "partial",
+   "modules": [
+    "facilities",
+    "health workforce: sanctioned, in position, shortfall"
+   ],
+   "access": "open",
+   "access_note": "Annual publication open.",
+   "url": "https://www.pib.gov.in/PressReleasePage.aspx?PRID=2053070&reg=48&lang=2",
+   "designs": [
+    "descriptive",
+    "did_rcs"
+   ],
+   "what": "Public-sector facilities and health workforce by level of care, with district-wise tables.",
+   "cautions": [
+    "Public sector only.",
+    "Shortfalls are measured against population norms, which were revised over time."
+   ],
+   "status": "checked",
+   "evidence": "https://www.pib.gov.in/PressReleasePage.aspx?PRID=2053070&reg=48&lang=2"
+  },
+  {
+   "id": "niti_hi",
+   "name": "NITI Aayog State Health Index",
+   "custodian": "NITI Aayog with MoHFW and the World Bank",
+   "scope": "India",
+   "themes": [
+    "mch_gender",
+    "financing"
+   ],
+   "structure": "Composite index",
+   "level": "state",
+   "rounds": "Rounds I–IV; Round IV covers 2019–20 (released December 2021)",
+   "latest": "Round IV confirmed; later rounds to verify",
+   "sex": "no",
+   "modules": [
+    "health outcomes",
+    "governance",
+    "inputs & processes"
+   ],
+   "access": "open",
+   "access_note": "Report and scores open.",
+   "url": "https://www.pib.gov.in/PressReleasePage.aspx?PRID=1785506",
+   "designs": [
+    "descriptive"
+   ],
+   "what": "A composite ranking of state health-system performance, reported as overall and incremental scores.",
+   "cautions": [
+    "Composite of many indicators with fixed weights; changes can reflect indicator revisions.",
+    "States are ranked within categories (larger states, smaller states, UTs)."
+   ],
+   "status": "to_verify",
+   "evidence": "https://www.pib.gov.in/PressReleasePage.aspx?PRID=1785506"
+  },
+  {
+   "id": "census2011",
+   "name": "Census of India 2011 (incl. D-series migration tables)",
+   "custodian": "Office of the Registrar General & Census Commissioner, India",
+   "scope": "India",
+   "themes": [
+    "migration_workforce",
+    "geo"
+   ],
+   "structure": "Census tables",
+   "level": "micro",
+   "rounds": "2011",
+   "latest": "2011 is the latest completed census",
+   "sex": "yes",
+   "modules": [
+    "population & denominators",
+    "migration by reason and duration",
+    "amenities"
+   ],
+   "access": "open",
+   "access_note": "Tables open on the Census of India website.",
+   "url": "https://censusindia.gov.in/",
+   "designs": [
+    "descriptive",
+    "spatial"
+   ],
+   "what": "Village and town-level population and migration tables; the standard source of denominators.",
+   "cautions": [
+    "Now dated; district boundaries have changed since 2011.",
+    "Migration is by place of last residence, unlike NSS/PLFS."
+   ],
+   "status": "to_verify",
+   "evidence": ""
+  },
+  {
+   "id": "shrug",
+   "name": "SHRUG: Socioeconomic High-resolution Rural-Urban Geographic Platform",
+   "custodian": "Development Data Lab",
+   "scope": "India",
+   "themes": [
+    "geo"
+   ],
+   "structure": "Linked geospatial data across sources",
+   "level": "micro",
+   "rounds": "Dozens of datasets for 500,000+ villages and 8,000 towns over about 25 years (v2.x)",
+   "latest": "SHRUG v2.2",
+   "sex": "partial",
+   "modules": [
+    "census & economic census",
+    "night lights",
+    "SECC assets",
+    "open boundaries"
+   ],
+   "access": "open",
+   "access_note": "Module downloads open.",
+   "url": "https://www.devdatalab.org/shrug",
+   "designs": [
+    "spatial",
+    "did_rcs"
+   ],
+   "what": "Links Indian villages and towns across censuses and satellite data with common identifiers.",
+   "cautions": [
+    "Uses its own 'shrid' identifiers rather than official codes.",
+    "Few direct health outcomes; mainly exposures and controls to link with health data."
+   ],
+   "status": "checked",
+   "evidence": "https://docs.devdatalab.org/"
+  },
+  {
+   "id": "dhs",
+   "name": "Demographic and Health Surveys (DHS)",
+   "custodian": "The DHS Program (ICF)",
+   "scope": "Global",
+   "themes": [
+    "mch_gender",
+    "geo"
+   ],
+   "structure": "Repeated cross-section",
+   "level": "micro",
+   "rounds": "Multi-country rounds since 1984",
+   "latest": "Programme status after 2025 changes in US funding: to verify",
+   "sex": "yes",
+   "modules": [
+    "maternal & child health",
+    "nutrition",
+    "women's empowerment",
+    "GPS cluster coordinates"
+   ],
+   "access": "registration",
+   "access_note": "Unit-level data and displaced GPS coordinates on request (registration).",
+   "url": "https://dhsprogram.com/Methodology/GPS-Data.cfm",
+   "designs": [
+    "did_rcs",
+    "spatial",
+    "cross_country"
+   ],
+   "what": "Comparable household surveys across 90+ countries, with geocoded survey clusters.",
+   "cautions": [
+    "Cluster coordinates are displaced for privacy: up to 2 km (urban), 5 km (rural) and 10 km for 1% of rural clusters."
+   ],
+   "status": "to_verify",
+   "evidence": "https://dhsprogram.com/Methodology/GPS-Data.cfm"
+  },
+  {
+   "id": "mics",
+   "name": "Multiple Indicator Cluster Surveys (MICS)",
+   "custodian": "UNICEF",
+   "scope": "Global",
+   "themes": [
+    "mch_gender"
+   ],
+   "structure": "Repeated cross-section",
+   "level": "region",
+   "rounds": "MICS1–MICS7; MICS7 runs to the end of 2026",
+   "latest": "MICS7 (first results released 2024)",
+   "sex": "yes",
+   "modules": [
+    "child development",
+    "women's health",
+    "water, sanitation & hygiene"
+   ],
+   "access": "registration",
+   "access_note": "Datasets downloadable after registration.",
+   "url": "https://mics.unicef.org/surveys",
+   "designs": [
+    "did_rcs",
+    "cross_country",
+    "descriptive"
+   ],
+   "what": "Household surveys on children and women, covering many SDG indicators.",
+   "cautions": [
+    "Module content varies by country and round."
+   ],
+   "status": "checked",
+   "evidence": "https://mics.unicef.org/news/launch-mics7-expanded-content-innovations-and-new-initiatives"
+  },
+  {
+   "id": "lsms",
+   "name": "Living Standards Measurement Study (LSMS)",
+   "custodian": "World Bank",
+   "scope": "Global",
+   "themes": [
+    "financing",
+    "migration_workforce",
+    "geo"
+   ],
+   "structure": "Cross-sections and household panels",
+   "level": "micro",
+   "rounds": "Country surveys since the 1980s; LSMS-ISA panels in Sub-Saharan Africa",
+   "latest": "Varies by country",
+   "sex": "yes",
+   "modules": [
+    "consumption",
+    "health spending",
+    "labour",
+    "agriculture"
+   ],
+   "access": "registration",
+   "access_note": "Through the World Bank Microdata Library.",
+   "url": "https://www.worldbank.org/en/programs/lsms",
+   "designs": [
+    "panel_fe",
+    "spatial",
+    "descriptive"
+   ],
+   "what": "Multi-topic household surveys, several with panels and georeferenced households.",
+   "cautions": [
+    "Questionnaires differ by country; check comparability before pooling."
+   ],
+   "status": "to_verify",
+   "evidence": ""
+  },
+  {
+   "id": "wdi",
+   "name": "World Development Indicators / Health, Nutrition & Population Statistics",
+   "custodian": "World Bank",
+   "scope": "Global",
+   "themes": [
+    "financing",
+    "mch_gender"
+   ],
+   "structure": "Country-year indicators",
+   "level": "country",
+   "rounds": "Annual series, most from 1960",
+   "latest": "Updated regularly",
+   "sex": "partial",
+   "modules": [
+    "health outcomes",
+    "health financing",
+    "population"
+   ],
+   "access": "open",
+   "access_note": "Open (CC BY 4.0).",
+   "url": "https://data.worldbank.org/",
+   "designs": [
+    "cross_country",
+    "descriptive"
+   ],
+   "what": "Harmonised country-year indicators compiled from international agencies.",
+   "cautions": [
+    "Many series are modelled or compiled from other agencies; check the original source."
+   ],
+   "status": "to_verify",
+   "evidence": ""
+  },
+  {
+   "id": "ghed",
+   "name": "Global Health Expenditure Database (GHED)",
+   "custodian": "World Health Organization",
+   "scope": "Global",
+   "themes": [
+    "financing"
+   ],
+   "structure": "Country-year health accounts",
+   "level": "country",
+   "rounds": "2000–2022 for 190+ countries",
+   "latest": "Latest complete year 2022 (database updated December 2025)",
+   "sex": "no",
+   "modules": [
+    "current health expenditure",
+    "out-of-pocket share",
+    "government & external financing"
+   ],
+   "access": "open",
+   "access_note": "Open.",
+   "url": "https://apps.who.int/nha/database",
+   "designs": [
+    "cross_country",
+    "descriptive"
+   ],
+   "what": "Comparable national health accounts across countries.",
+   "cautions": [
+    "National figures (for example India's) may differ from the country's own latest NHA edition."
+   ],
+   "status": "checked",
+   "evidence": "https://ghdx.healthdata.org/record/who-global-health-expenditure-database"
+  },
+  {
+   "id": "gho",
+   "name": "Global Health Observatory (GHO)",
+   "custodian": "World Health Organization",
+   "scope": "Global",
+   "themes": [
+    "mch_gender",
+    "ageing"
+   ],
+   "structure": "Country-year indicators",
+   "level": "country",
+   "rounds": "Varies by indicator",
+   "latest": "Updated regularly",
+   "sex": "partial",
+   "modules": [
+    "mortality",
+    "disease",
+    "health systems"
+   ],
+   "access": "open",
+   "access_note": "Open, with an API.",
+   "url": "https://www.who.int/data/gho",
+   "designs": [
+    "cross_country",
+    "descriptive"
+   ],
+   "what": "WHO's portal for health statistics across its member states.",
+   "cautions": [
+    "Many values are WHO estimates, not direct country reports."
+   ],
+   "status": "to_verify",
+   "evidence": ""
+  },
+  {
+   "id": "gbd",
+   "name": "Global Burden of Disease (GBD 2023)",
+   "custodian": "Institute for Health Metrics and Evaluation (IHME)",
+   "scope": "Global",
+   "themes": [
+    "ageing",
+    "mch_gender"
+   ],
+   "structure": "Modelled estimates",
+   "level": "state",
+   "rounds": "1990–2023 for 204 countries and 660 subnational locations, including Indian states",
+   "latest": "GBD 2023",
+   "sex": "yes",
+   "modules": [
+    "deaths & DALYs by cause",
+    "risk factors",
+    "healthy life expectancy"
+   ],
+   "access": "open",
+   "access_note": "Open for non-commercial use through GBD Results.",
+   "url": "https://vizhub.healthdata.org/gbd-results/",
+   "designs": [
+    "cross_country",
+    "descriptive"
+   ],
+   "what": "Comprehensive, comparable estimates of disease burden and risk factors.",
+   "cautions": [
+    "Modelled, not observed: estimates depend on model assumptions and are revised between rounds.",
+    "Do not treat as independent data points in regressions without care."
+   ],
+   "status": "checked",
+   "evidence": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC12535840/"
+  },
+  {
+   "id": "nhwa",
+   "name": "National Health Workforce Accounts (NHWA)",
+   "custodian": "World Health Organization",
+   "scope": "Global",
+   "themes": [
+    "migration_workforce"
+   ],
+   "structure": "Country-year indicators",
+   "level": "country",
+   "rounds": "Annual country reporting",
+   "latest": "Updated as countries report",
+   "sex": "partial",
+   "modules": [
+    "health-worker density per 10,000",
+    "education & training",
+    "foreign-trained workers"
+   ],
+   "access": "open",
+   "access_note": "Open through the NHWA data portal and GHO.",
+   "url": "https://apps.who.int/nhwaportal/",
+   "designs": [
+    "cross_country",
+    "descriptive"
+   ],
+   "what": "Standardised health-workforce indicators, including density of doctors, nurses and midwives.",
+   "cautions": [
+    "Coverage and definitions vary with country reporting."
+   ],
+   "status": "checked",
+   "evidence": "https://unstats.un.org/sdgs/metadata/files/metadata-03-0c-01.pdf"
+  },
+  {
+   "id": "oecd_hwm",
+   "name": "OECD Health Workforce Migration indicators",
+   "custodian": "OECD",
+   "scope": "Global",
+   "themes": [
+    "migration_workforce"
+   ],
+   "structure": "Country-year, destination and origin",
+   "level": "country",
+   "rounds": "Annual, from the OECD/Eurostat/WHO-Europe Joint Questionnaire",
+   "latest": "Updated annually",
+   "sex": "no",
+   "modules": [
+    "foreign-trained doctors & nurses (stock and inflow)",
+    "country of training"
+   ],
+   "access": "open",
+   "access_note": "Open through OECD data.",
+   "url": "https://www.oecd.org/en/publications/recent-trends-in-international-migration-of-doctors-nurses-and-medical-students_5571ef48-en.html",
+   "designs": [
+    "cross_country",
+    "descriptive"
+   ],
+   "what": "Where foreign-trained doctors and nurses work in OECD countries, and where they trained.",
+   "cautions": [
+    "Destination-country data: covers OECD and partner countries only."
+   ],
+   "status": "checked",
+   "evidence": "https://www.oecd.org/en/publications/recent-trends-in-international-migration-of-doctors-nurses-and-medical-students_5571ef48-en.html"
+  },
+  {
+   "id": "knomad",
+   "name": "Migration & Remittances Data (KNOMAD / World Bank)",
+   "custodian": "World Bank (KNOMAD)",
+   "scope": "Global",
+   "themes": [
+    "migration_workforce"
+   ],
+   "structure": "Country and country-pair (bilateral) matrices",
+   "level": "country",
+   "rounds": "Bilateral migration matrices for 2010, 2013 and 2017; annual bilateral remittance estimates",
+   "latest": "KNOMAD discontinued; last dataset released for 2023",
+   "sex": "partial",
+   "modules": [
+    "migrant stocks by corridor",
+    "remittance flows"
+   ],
+   "access": "open",
+   "access_note": "Open downloads.",
+   "url": "https://www.knomad.org/data/faqs",
+   "designs": [
+    "cross_country",
+    "descriptive"
+   ],
+   "what": "Corridor-level migrant stocks and remittance flows.",
+   "cautions": [
+    "Bilateral remittances are modelled from migrant stocks and incomes, not observed flows."
+   ],
+   "status": "checked",
+   "evidence": "https://www.knomad.org/data/faqs"
+  }
+ ]
+}
