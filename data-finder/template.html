@@ -1,0 +1,484 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Health Economics Data Finder | Ashu Arora</title>
+  <meta name="description" content="Find evaluation-ready health data for India and global comparisons: 24 curated datasets tagged by structure, geography, design and access, plus a hotspot map. By Ashu Arora." />
+  <style>
+    :root {
+      --teal: #0F766E; --sage: #84A98C; --mist: #EAF1EF; --warm-white: #FAF7F2; --parchment: #F3EBDD;
+      --ink: #183B39; --muted: #5F7370; --border: #DCE6E2; --white: #FFFFFF; --amber: #8A6B3D; --amber-bg: #F8F0E2;
+      --h0: #F3EBDD; --h1: #E8CDA8; --h2: #D9A06F; --h3: #B96A3E; --h4: #7E3B20; --nodata: #E4E8E6;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body { background: var(--warm-white); color: var(--ink); font-family: Arial, Helvetica, sans-serif; line-height: 1.6; }
+    h1, h2, h3, h4 { font-family: "Palatino Linotype", Palatino, Georgia, serif; line-height: 1.2; }
+    a { color: inherit; text-decoration: none; }
+    button, input, select { font: inherit; color: inherit; }
+    .container { width: min(1160px, 92%); margin: auto; }
+
+    header { background: rgba(250,247,242,.96); border-bottom: 1px solid var(--border); position: sticky; top: 0; z-index: 20; backdrop-filter: blur(6px); }
+    .nav { min-height: 70px; display: flex; align-items: center; justify-content: space-between; gap: 24px; }
+    .brand { display: flex; align-items: center; gap: 12px; font-family: Georgia, serif; font-size: 20px; font-weight: 700; color: var(--teal); }
+    .brand svg { width: 34px; height: 34px; }
+    .nav-links { display: flex; gap: 22px; align-items: center; font-size: 13px; color: #405C58; }
+    .nav-links a:hover { color: var(--teal); }
+    .nav-cta { background: var(--teal); color: #fff !important; padding: 9px 14px; border-radius: 8px; font-weight: 700; }
+
+    .hero { background: radial-gradient(circle at 85% 25%, rgba(132,169,140,.22), transparent 28%), linear-gradient(120deg, var(--mist), var(--warm-white) 72%); padding: 72px 0 60px; border-bottom: 1px solid var(--border); }
+    .hero-grid { display: grid; grid-template-columns: 1.25fr .75fr; gap: 50px; align-items: center; }
+    .eyebrow { color: var(--teal); text-transform: uppercase; letter-spacing: 2px; font-size: 11px; font-weight: 700; margin-bottom: 14px; }
+    .hero h1 { font-size: clamp(38px, 5vw, 62px); letter-spacing: -1.2px; margin-bottom: 20px; }
+    .hero h1 span { color: var(--teal); font-style: italic; }
+    .hero-copy { max-width: 620px; font-size: 17px; color: #4E6865; margin-bottom: 26px; }
+    .search-box { display: flex; background: #fff; border: 1px solid #C7D8D2; border-radius: 12px; padding: 7px; box-shadow: 0 12px 35px rgba(15,70,64,.08); max-width: 720px; }
+    .search-box input { flex: 1; min-width: 0; border: 0; outline: 0; padding: 13px; background: transparent; }
+    .search-box button { border: 0; background: var(--teal); color: #fff; border-radius: 8px; padding: 0 22px; cursor: pointer; font-weight: 700; }
+    .hints { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 14px; font-size: 12px; color: var(--muted); align-items: center; }
+    .hints button { border: 1px solid var(--border); background: #fff; border-radius: 20px; padding: 5px 11px; cursor: pointer; font-size: 12px; color: #38635D; }
+    .hints button:hover { border-color: var(--teal); }
+    .hero-card { background: #fff; border: 1px solid #D6E3DD; border-radius: 20px; padding: 26px; box-shadow: 0 18px 40px -24px #153f3740; }
+    .hero-card h3 { font-size: 18px; margin-bottom: 14px; }
+    .hstats { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    .hstats div { background: var(--mist); border-radius: 12px; padding: 14px; }
+    .hstats b { display: block; font-family: Georgia, serif; font-size: 28px; color: var(--teal); line-height: 1.1; }
+    .hstats span { font-size: 12px; color: var(--muted); }
+    .hero-card p { font-size: 12px; color: var(--muted); margin-top: 14px; }
+
+    section { padding: 64px 0; }
+    .section-heading { display: flex; justify-content: space-between; align-items: end; gap: 20px; margin-bottom: 24px; }
+    .section-heading h2 { font-size: clamp(28px, 3vw, 38px); margin-bottom: 8px; }
+    .section-heading p { color: var(--muted); max-width: 680px; font-size: 14px; }
+    .alt { background: var(--mist); }
+    .warm { background: var(--parchment); }
+
+    /* finder */
+    .finder { background: #fff; border: 1px solid var(--border); border-radius: 16px; padding: 22px; display: grid; grid-template-columns: repeat(3, 1fr) auto; gap: 14px; align-items: end; }
+    .field label { display: block; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: var(--teal); margin-bottom: 6px; }
+    .field select { width: 100%; border: 1px solid var(--border); background: var(--warm-white); border-radius: 9px; padding: 11px 12px; }
+    .checks { display: flex; flex-direction: column; gap: 6px; font-size: 13px; color: #405C58; }
+    .checks label { display: flex; gap: 8px; align-items: center; cursor: pointer; }
+    .results { display: grid; gap: 12px; margin-top: 18px; }
+    .result { background: #fff; border: 1px solid var(--border); border-left: 4px solid var(--teal); border-radius: 12px; padding: 16px 18px; display: grid; grid-template-columns: 34px 1fr auto; gap: 14px; align-items: start; cursor: pointer; transition: .15s; }
+    .result:hover { border-color: var(--sage); transform: translateY(-1px); }
+    .rank { width: 34px; height: 34px; border-radius: 50%; background: var(--mist); color: var(--teal); display: grid; place-items: center; font-weight: 700; font-family: Georgia, serif; }
+    .result h3 { font-size: 18px; margin-bottom: 4px; }
+    .why { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 6px; }
+    .why span { font-size: 11.5px; background: var(--mist); color: #2F5E57; padding: 3px 9px; border-radius: 20px; }
+    .why span.warn { background: var(--amber-bg); color: var(--amber); }
+    .score { font-size: 11px; color: var(--muted); text-align: right; white-space: nowrap; }
+    .empty { padding: 22px; background: #fff; border: 1px dashed var(--sage); border-radius: 12px; color: var(--muted); font-size: 14px; }
+
+    /* dataset cards */
+    .tools { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 18px; }
+    .tools input, .tools select { border: 1px solid var(--border); background: #fff; border-radius: 8px; padding: 10px 12px; font-size: 14px; }
+    .tools input { flex: 1; min-width: 220px; }
+    .grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+    .card { background: #fff; border: 1px solid var(--border); border-radius: 13px; padding: 20px; cursor: pointer; transition: .2s; display: flex; flex-direction: column; gap: 8px; }
+    .card:hover { transform: translateY(-3px); border-color: var(--sage); box-shadow: 0 12px 25px #163c3510; }
+    .card .top { display: flex; justify-content: space-between; gap: 8px; align-items: center; }
+    .scope { font-size: 10.5px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: var(--teal); }
+    .card h3 { font-size: 18px; }
+    .card p { font-size: 13px; color: var(--muted); }
+    .tags { display: flex; flex-wrap: wrap; gap: 6px; margin-top: auto; padding-top: 6px; }
+    .tag { background: var(--mist); color: #38635D; border-radius: 20px; padding: 3px 9px; font-size: 11px; }
+    .st { font-size: 10.5px; font-weight: 700; padding: 3px 8px; border-radius: 20px; white-space: nowrap; }
+    .st.ok { background: #E1F0EA; color: #0F766E; }
+    .st.tv { background: var(--amber-bg); color: var(--amber); }
+    .count { font-size: 13px; color: var(--muted); margin-bottom: 10px; }
+
+    /* modal */
+    dialog { border: 0; border-radius: 16px; padding: 0; max-width: 720px; width: 94vw; box-shadow: 0 30px 80px #0b2a2760; }
+    dialog::backdrop { background: rgba(16,40,37,.45); }
+    .dlg { padding: 26px 28px; }
+    .dlg h3 { font-size: 26px; margin: 6px 0 6px; }
+    .dlg .sub { font-size: 13px; color: var(--muted); margin-bottom: 14px; }
+    .dl { display: grid; grid-template-columns: 150px 1fr; gap: 8px 16px; font-size: 13.5px; border-top: 1px solid var(--border); padding-top: 14px; }
+    .dl dt { color: var(--teal); font-weight: 700; font-size: 12px; text-transform: uppercase; letter-spacing: .5px; padding-top: 2px; }
+    .dl dd ul { padding-left: 16px; }
+    .dlg .close { float: right; border: 0; background: var(--mist); border-radius: 50%; width: 34px; height: 34px; cursor: pointer; font-size: 18px; color: var(--teal); }
+    .dlg .go { display: inline-block; margin-top: 16px; background: var(--teal); color: #fff; padding: 10px 16px; border-radius: 8px; font-weight: 700; font-size: 13px; }
+
+    /* compare table */
+    .tbl-wrap { overflow-x: auto; background: #fff; border: 1px solid var(--border); border-radius: 13px; }
+    table { width: 100%; border-collapse: collapse; font-size: 13px; min-width: 860px; }
+    th { text-align: left; font-size: 11px; text-transform: uppercase; letter-spacing: .6px; color: var(--teal); padding: 11px 12px; border-bottom: 1px solid var(--border); cursor: pointer; white-space: nowrap; background: #FBFDFC; position: sticky; top: 0; }
+    th:hover { color: var(--ink); }
+    td { padding: 10px 12px; border-bottom: 1px solid #EEF3F1; vertical-align: top; }
+    tr:hover td { background: #F6FAF8; }
+    td.n { white-space: nowrap; }
+    .dot { display: inline-block; width: 9px; height: 9px; border-radius: 50%; margin-right: 6px; vertical-align: 0; }
+    .yes { background: #0F766E; } .partial { background: #84A98C; } .no { background: #C9D6D2; }
+
+    /* map */
+    .pills { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 14px; }
+    .pill { border: 1px solid #D9CBB5; background: rgba(255,255,255,.7); border-radius: 20px; padding: 7px 14px; cursor: pointer; font-size: 13px; }
+    .pill.on { background: var(--h4); border-color: var(--h4); color: #fff; }
+    .map-grid { display: grid; grid-template-columns: minmax(0, 1fr) 290px; gap: 18px; align-items: start; }
+    .map-card { background: rgba(255,255,255,.8); border: 1px solid #E4D8C6; border-radius: 15px; padding: 14px; position: relative; }
+    .map-card svg { width: 100%; height: auto; display: block; }
+    .map-card path { stroke: #fff; stroke-width: .5; transition: fill .4s; cursor: pointer; }
+    .map-card path:hover { stroke: var(--ink); stroke-width: 1; }
+    .legend { display: flex; flex-wrap: wrap; gap: 10px 14px; font-size: 12px; color: var(--muted); margin-top: 10px; align-items: center; }
+    .legend i { display: inline-block; width: 14px; height: 10px; border-radius: 2px; margin-right: 5px; vertical-align: -1px; }
+    .tip { position: fixed; pointer-events: none; background: var(--ink); color: #fff; font-size: 12.5px; padding: 8px 10px; border-radius: 8px; opacity: 0; transition: opacity .12s; z-index: 50; max-width: 260px; }
+    .side { background: rgba(255,255,255,.8); border: 1px solid #E4D8C6; border-radius: 15px; padding: 18px; }
+    .side h3 { font-size: 18px; margin-bottom: 4px; }
+    .side .unit { font-size: 12px; color: var(--muted); margin-bottom: 10px; }
+    .top10 { list-style: none; counter-reset: t; font-size: 13px; }
+    .top10 li { display: grid; grid-template-columns: 22px 1fr auto; gap: 6px; padding: 5px 0; border-bottom: 1px solid #EEE4D4; counter-increment: t; }
+    .top10 li::before { content: counter(t); color: var(--muted); font-size: 12px; }
+    .top10 b { font-family: Georgia, serif; }
+    .top10 small { color: var(--muted); font-size: 11px; }
+    .measure { margin-top: 14px; font-size: 12px; color: var(--muted); }
+    .measure button { border: 1px solid var(--border); background: #fff; border-radius: 20px; padding: 3px 9px; font-size: 11.5px; cursor: pointer; margin: 4px 4px 0 0; color: var(--teal); }
+    .note { font-size: 12px; color: var(--muted); margin-top: 12px; }
+
+    /* designs */
+    .dgrid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+    .dcard { background: #fff; border: 1px solid var(--border); border-radius: 13px; padding: 20px; }
+    .dcard h3 { font-size: 18px; margin-bottom: 6px; }
+    .dcard p { font-size: 13px; color: var(--muted); margin-bottom: 10px; }
+    .dcard button { border: 0; background: var(--mist); color: #2F5E57; border-radius: 20px; padding: 4px 10px; font-size: 11.5px; margin: 3px 4px 0 0; cursor: pointer; }
+    .dcard button:hover { background: #D6E9E2; }
+
+    .about-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+    .about-card { background: #fff; border: 1px solid var(--border); border-radius: 13px; padding: 22px; font-size: 14px; color: #3F5B57; }
+    .about-card h3 { font-size: 19px; margin-bottom: 8px; color: var(--ink); }
+    .about-card ul { padding-left: 18px; }
+    .about-card li { margin-bottom: 6px; }
+    .about-card a { color: var(--teal); font-weight: 700; }
+
+    footer { background: #173F3B; color: #fff; padding: 36px 0 24px; }
+    footer p, footer a { color: #C4D8D2; font-size: 13px; }
+    .foot { display: flex; justify-content: space-between; gap: 24px; flex-wrap: wrap; }
+
+    @media (max-width: 960px) {
+      .nav-links a:not(.nav-cta) { display: none; }
+      .hero-grid, .map-grid, .about-grid { grid-template-columns: 1fr; }
+      .finder { grid-template-columns: 1fr 1fr; }
+      .grid, .dgrid { grid-template-columns: 1fr 1fr; }
+    }
+    @media (max-width: 620px) {
+      .hero { padding: 48px 0; }
+      .search-box { flex-direction: column; } .search-box button { padding: 12px; }
+      .finder, .grid, .dgrid { grid-template-columns: 1fr; }
+      .section-heading { flex-direction: column; align-items: start; }
+      .result { grid-template-columns: 30px 1fr; } .score { grid-column: 2; text-align: left; }
+      .dl { grid-template-columns: 1fr; gap: 2px; } .dl dd { margin-bottom: 8px; }
+    }
+    @media (prefers-reduced-motion: reduce) { * { transition: none !important; scroll-behavior: auto !important; } }
+  </style>
+</head>
+<body>
+<header>
+  <div class="container nav">
+    <a href="#top" class="brand" aria-label="Health Economics Data Finder home">
+      <svg viewBox="0 0 40 40" fill="none" aria-hidden="true"><path d="M5 8H35V32H5Z" stroke="#0F766E" stroke-width="1.5"/><path d="M15 8V32M25 8V32M5 16H35M5 24H35" stroke="#84A98C" stroke-width="1.2"/><circle cx="15" cy="16" r="3" fill="#0F766E"/><circle cx="25" cy="24" r="3" fill="#0F766E"/><path d="M15 16L25 24" stroke="#0F766E" stroke-width="1.5"/></svg>
+      <span>Health Economics Data Finder</span>
+    </a>
+    <nav class="nav-links" aria-label="Main navigation">
+      <a href="#finder">Find data</a><a href="#datasets">Datasets</a><a href="#compare">Compare</a><a href="#map">Hotspot map</a><a href="#designs">Designs</a><a href="#about">About</a>
+      <a class="nav-cta" href="/projects">← Ashu Arora</a>
+    </nav>
+  </div>
+</header>
+
+<main id="top">
+<section class="hero">
+  <div class="container hero-grid">
+    <div>
+      <div class="eyebrow">For health economists · India first, with global comparators</div>
+      <h1>Find the right data for your <span>health economics</span> study</h1>
+      <p class="hero-copy">A curated catalogue of evaluation-ready datasets. Each one is tagged by structure (panel, repeated cross-section, administrative), the finest geography it supports, the research designs it can serve, its access conditions and its comparability traps. Every entry links to the source used to check it.</p>
+      <form class="search-box" id="heroSearch">
+        <input id="heroInput" type="search" placeholder="Search datasets: out-of-pocket, migration, district, panel, NFHS…" aria-label="Search datasets" />
+        <button type="submit">Search →</button>
+      </form>
+      <div class="hints">Try:
+        <button data-q="out-of-pocket">out-of-pocket</button><button data-q="migration">migration</button><button data-q="panel">panel</button><button data-q="district">district</button><button data-q="workforce">workforce</button>
+      </div>
+    </div>
+    <aside class="hero-card" aria-label="Catalogue at a glance">
+      <h3>The catalogue at a glance</h3>
+      <div class="hstats">
+        <div><b id="sN">–</b><span>datasets</span></div>
+        <div><b id="sChecked">–</b><span>checked against sources</span></div>
+        <div><b id="sIndia">–</b><span>India</span></div>
+        <div><b id="sGlobal">–</b><span>global</span></div>
+      </div>
+      <p id="sDate"></p>
+      <a href="/data-finder-guide.pdf" download="Arora-2026-Data-Finder-Guide.pdf" style="display:inline-block;margin-top:12px;background:var(--teal);color:#fff;padding:9px 14px;border-radius:8px;font-weight:700;font-size:13px">Download the user guide &amp; issue briefs (PDF) ↓</a>
+    </aside>
+  </div>
+</section>
+
+<section id="finder">
+  <div class="container">
+    <div class="section-heading"><div>
+      <div class="eyebrow">Guided search</div>
+      <h2>What do you want to study?</h2>
+      <p>Pick a theme, the finest geography you need, and the design you have in mind. Datasets are ranked by fit, and each result says why it matched and what to watch out for.</p>
+    </div></div>
+    <div class="finder">
+      <div class="field"><label for="fTheme">Theme</label><select id="fTheme"></select></div>
+      <div class="field"><label for="fLevel">Finest geography needed</label><select id="fLevel"></select></div>
+      <div class="field"><label for="fDesign">Research design</label><select id="fDesign"></select></div>
+      <div class="checks">
+        <label><input type="checkbox" id="fOpen" /> Open access only</label>
+        <label><input type="checkbox" id="fSex" /> Needs sex breakdown</label>
+        <label><input type="checkbox" id="fIndia" /> India only</label>
+      </div>
+    </div>
+    <div class="results" id="results"></div>
+  </div>
+</section>
+
+<section id="datasets" class="alt">
+  <div class="container">
+    <div class="section-heading"><div>
+      <div class="eyebrow">Catalogue</div>
+      <h2>All datasets</h2>
+      <p>Search and filter the catalogue. Click any card for structure, rounds, access, comparability notes and the official link.</p>
+    </div></div>
+    <div class="tools">
+      <input id="q" type="search" placeholder="Search names, topics, modules, custodians…" aria-label="Search the catalogue" />
+      <select id="fScope" aria-label="Scope"><option value="">India & global</option><option>India</option><option>Global</option></select>
+      <select id="fThemeB" aria-label="Theme"></select>
+      <select id="fAccess" aria-label="Access"><option value="">Any access</option><option value="open">Open</option><option value="registration">Registration</option></select>
+      <select id="fStatus" aria-label="Verification"><option value="">Any status</option><option value="checked">Checked</option><option value="to_verify">To verify</option></select>
+    </div>
+    <p class="count" id="count"></p>
+    <div class="grid" id="cards"></div>
+  </div>
+</section>
+
+<section id="compare">
+  <div class="container">
+    <div class="section-heading"><div>
+      <div class="eyebrow">Side by side</div>
+      <h2>Compare structure, geography and access</h2>
+      <p>Click a column to sort. Sex breakdown: <span class="dot yes"></span>yes <span class="dot partial"></span>partial <span class="dot no"></span>no.</p>
+    </div></div>
+    <div class="tbl-wrap"><table id="tbl"><thead><tr>
+      <th data-k="name">Dataset</th><th data-k="scope">Scope</th><th data-k="structure">Structure</th><th data-k="lvl">Finest level</th><th data-k="latest">Latest</th><th data-k="sex">Sex</th><th data-k="access">Access</th><th data-k="status">Status</th>
+    </tr></thead><tbody></tbody></table></div>
+  </div>
+</section>
+
+<section id="map" class="warm">
+  <div class="container">
+    <div class="section-heading"><div>
+      <div class="eyebrow">Where the burden is</div>
+      <h2>Health-risk hotspots</h2>
+      <p>Country-level shares of people exposed to major health risks, from World Bank Group Scorecard indicators (latest year from 2015 onward). Hover a country for its value and year. The panel lists the ten highest values and the datasets that measure the risk at finer resolution.</p>
+    </div></div>
+    <div class="pills" id="mPills"></div>
+    <div class="map-grid">
+      <div class="map-card"><svg id="world" role="img" aria-label="World map of the selected indicator"></svg>
+        <div class="legend" id="legend"></div>
+      </div>
+      <aside class="side" id="side"></aside>
+    </div>
+    <p class="note" id="mNote"></p>
+  </div>
+</section>
+
+<section id="designs" class="alt">
+  <div class="container">
+    <div class="section-heading"><div>
+      <div class="eyebrow">Match data to design</div>
+      <h2>Which data suit which design?</h2>
+      <p>Data structure largely decides the identification strategy available. Click a dataset to open it.</p>
+    </div></div>
+    <div class="dgrid" id="dgrid"></div>
+  </div>
+</section>
+
+<section id="about">
+  <div class="container">
+    <div class="section-heading"><div>
+      <div class="eyebrow">Method & sourcing</div>
+      <h2>How this catalogue is built</h2>
+    </div></div>
+    <div class="about-grid">
+      <div class="about-card"><h3>Verification</h3><ul>
+        <li><span class="st ok">Checked</span> The entry's rounds, latest release and access were checked against an official or authoritative source on the date shown. The source is linked in the entry.</li>
+        <li><span class="st tv">To verify</span> The entry is drafted from the author's knowledge, or a detail (such as a new round's release) could not yet be confirmed. The unconfirmed point is stated in the entry.</li>
+        <li>The catalogue lists metadata only. It does not host or redistribute microdata; access always goes through the custodian.</li>
+      </ul></div>
+      <div class="about-card"><h3>Map data and scope</h3><ul>
+        <li>Hotspot values come from World Bank Group Scorecard <em>vision</em> indicators: food and nutrition insecurity; basic hygiene, sanitation and drinking water (shown as the share <em>without</em> access, 100 minus the reported share); and poverty at $3.00 a day. Only country-years from 2015 onward are shown.</li>
+        <li>No values are estimated or filled in. Countries without data are shown in grey.</li>
+        <li><a href="/data-finder-guide.pdf" download="Arora-2026-Data-Finder-Guide.pdf">User guide &amp; issue briefs (PDF, 11 pp.)</a>: how to use the Finder, matching data to designs, ten comparability traps, and four short analyses of health issues.</li>
+        <li>Suggest a dataset or a correction: <a href="mailto:aashuarora@gmail.com?subject=Health%20Economics%20Data%20Finder">email</a>. New entries are added only with a source link.</li>
+      </ul></div>
+    </div>
+  </div>
+</section>
+</main>
+
+<footer><div class="container foot">
+  <p>Health Economics Data Finder · curated by <a href="/">Ashu Arora</a> · © Ashu Arora</p>
+  <p id="fDate"></p>
+</div></footer>
+
+<dialog id="dlg"><div class="dlg" id="dlgBody"></div></dialog>
+<div class="tip" id="tip"></div>
+
+<script>
+const DATA = /*__DATA__*/null;
+const C = DATA.catalogue, DS = C.datasets, LV = C.levels;
+const $ = s => document.querySelector(s);
+const esc = s => String(s ?? '').replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+const fmtDate = d => new Date(d + 'T00:00:00').toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
+const byId = Object.fromEntries(DS.map(d => [d.id, d]));
+const status = d => d.status === 'checked'
+  ? `<span class="st ok" title="Checked against a source on ${fmtDate(C.checked_on)}">Checked</span>`
+  : `<span class="st tv" title="Not yet confirmed against an official source">To verify</span>`;
+const hay = d => [d.name, d.custodian, d.scope, d.structure, d.what, d.rounds, d.latest, d.modules.join(' '), d.themes.map(t => C.themes[t]).join(' '),
+  C.level_labels[d.level], d.designs.map(k => C.designs[k].label).join(' '), d.access].join(' ').toLowerCase();
+
+// ---------------------------------------------------------------- hero
+$('#sN').textContent = DS.length;
+$('#sChecked').textContent = DS.filter(d => d.status === 'checked').length;
+$('#sIndia').textContent = DS.filter(d => d.scope === 'India').length;
+$('#sGlobal').textContent = DS.filter(d => d.scope === 'Global').length;
+$('#sDate').textContent = `Entries last checked ${fmtDate(C.checked_on)}. Metadata only; data stay with their custodians.`;
+$('#fDate').textContent = `Last checked ${fmtDate(C.checked_on)}`;
+function jumpSearch(q) { $('#q').value = q; renderCards(); document.getElementById('datasets').scrollIntoView({ behavior: 'smooth' }); }
+$('#heroSearch').addEventListener('submit', e => { e.preventDefault(); jumpSearch($('#heroInput').value); });
+document.querySelectorAll('.hints button').forEach(b => b.onclick = () => { $('#heroInput').value = b.dataset.q; jumpSearch(b.dataset.q); });
+
+// ---------------------------------------------------------------- modal
+function openDs(id) {
+  const d = byId[id];
+  $('#dlgBody').innerHTML = `<button class="close" aria-label="Close" onclick="document.getElementById('dlg').close()">×</button>
+    <span class="scope">${esc(d.scope)}</span> ${status(d)}
+    <h3>${esc(d.name)}</h3><div class="sub">${esc(d.custodian)}</div>
+    <p style="font-size:14.5px;margin-bottom:14px">${esc(d.what)}</p>
+    <dl class="dl">
+      <dt>Structure</dt><dd>${esc(d.structure)}</dd>
+      <dt>Finest level</dt><dd>${esc(C.level_labels[d.level])}</dd>
+      <dt>Rounds</dt><dd>${esc(d.rounds)}</dd>
+      <dt>Latest</dt><dd>${esc(d.latest)}</dd>
+      <dt>Themes</dt><dd>${d.themes.map(t => esc(C.themes[t])).join(' · ')}</dd>
+      <dt>Key modules</dt><dd>${d.modules.map(esc).join(' · ')}</dd>
+      <dt>Sex breakdown</dt><dd><span class="dot ${d.sex}"></span>${d.sex}</dd>
+      <dt>Suits designs</dt><dd>${d.designs.map(k => esc(C.designs[k].label)).join(' · ')}</dd>
+      <dt>Access</dt><dd>${esc(d.access_note)}</dd>
+      <dt>Watch out</dt><dd><ul>${d.cautions.map(c => `<li>${esc(c)}</li>`).join('')}</ul></dd>
+      <dt>Verification</dt><dd>${d.status === 'checked' ? `Checked ${fmtDate(C.checked_on)} against <a style="color:var(--teal)" href="${esc(d.evidence)}" target="_blank" rel="noopener">this source ↗</a>` : 'To verify: not yet confirmed against an official source.'}</dd>
+    </dl>
+    <a class="go" href="${esc(d.url)}" target="_blank" rel="noopener">Go to the source ↗</a>`;
+  $('#dlg').showModal();
+}
+$('#dlg').addEventListener('click', e => { if (e.target.id === 'dlg') $('#dlg').close(); });
+
+// ---------------------------------------------------------------- guided finder
+const opt = (v, l) => `<option value="${v}">${esc(l)}</option>`;
+$('#fTheme').innerHTML = opt('', 'Any theme') + Object.entries(C.themes).map(([k, v]) => opt(k, v)).join('');
+$('#fThemeB').innerHTML = opt('', 'Any theme') + Object.entries(C.themes).map(([k, v]) => opt(k, v)).join('');
+$('#fLevel').innerHTML = opt('', 'Any level') + ['country', 'state', 'district', 'micro'].map(k => opt(k, C.level_labels[k] + ' or finer')).join('');
+$('#fDesign').innerHTML = opt('', 'Any design') + Object.entries(C.designs).map(([k, v]) => opt(k, v.label)).join('');
+function runFinder() {
+  const th = $('#fTheme').value, lv = $('#fLevel').value, de = $('#fDesign').value;
+  const open = $('#fOpen').checked, sex = $('#fSex').checked, india = $('#fIndia').checked;
+  let rows = DS.map(d => {
+    let s = 0; const why = [], warn = [];
+    if (th) { if (d.themes.includes(th)) { s += d.themes[0] === th ? 4 : 3; why.push(C.themes[th] + (d.themes[0] === th ? ' (main focus)' : '')); } else return null; }
+    if (lv) { if (LV[d.level] >= LV[lv]) { s += 2 + (LV[d.level] - LV[lv]) * .1; why.push(`to ${C.level_labels[d.level].toLowerCase()}`); } else return null; }
+    if (de) { if (d.designs.includes(de)) { s += 3; why.push(`fits ${C.designs[de].label.toLowerCase()}`); } else return null; }
+    if (open && d.access !== 'open') return null;
+    if (sex) { if (d.sex === 'yes') { s += 1; why.push('sex-disaggregated'); } else if (d.sex === 'partial') { warn.push('sex breakdown partial'); } else return null; }
+    if (india && d.scope !== 'India') return null;
+    if (d.access === 'open') { s += .5; why.push('open access'); }
+    if (d.status !== 'checked') { s -= .3; warn.push('to verify'); }
+    return { d, s, why, warn };
+  }).filter(Boolean).sort((a, b) => b.s - a.s);
+  const any = th || lv || de || open || sex || india;
+  if (!any) { $('#results').innerHTML = `<div class="empty">Choose at least one option above to rank datasets, or browse the full catalogue below.</div>`; return; }
+  if (!rows.length) { $('#results').innerHTML = `<div class="empty">No dataset in the catalogue meets all these conditions. Try a coarser geography or a different design, or <a style="color:var(--teal);font-weight:700" href="mailto:aashuarora@gmail.com?subject=Data%20Finder%20suggestion">suggest a dataset</a>.</div>`; return; }
+  $('#results').innerHTML = rows.slice(0, 6).map((r, i) => `<div class="result" data-id="${r.d.id}" tabindex="0" role="button">
+      <div class="rank">${i + 1}</div>
+      <div><h3>${esc(r.d.name)}</h3><div style="font-size:13px;color:var(--muted)">${esc(r.d.structure)} · ${esc(r.d.rounds)}</div>
+        <div class="why">${r.why.map(w => `<span>✓ ${esc(w)}</span>`).join('')}${r.warn.map(w => `<span class="warn">! ${esc(w)}</span>`).join('')}</div>
+        <div style="font-size:12.5px;color:#7a5a36;margin-top:6px">Watch out: ${esc(r.d.cautions[0])}</div></div>
+      <div class="score">${status(r.d)}</div></div>`).join('') +
+    (rows.length > 6 ? `<p class="count">${rows.length - 6} more match; see the full catalogue below.</p>` : '');
+  document.querySelectorAll('.result').forEach(n => { n.onclick = () => openDs(n.dataset.id); n.onkeydown = e => { if (e.key === 'Enter') openDs(n.dataset.id); }; });
+}
+['#fTheme', '#fLevel', '#fDesign', '#fOpen', '#fSex', '#fIndia'].forEach(s => $(s).addEventListener('change', runFinder));
+$('#fTheme').value = 'financing'; $('#fLevel').value = 'state'; runFinder();
+
+// ---------------------------------------------------------------- cards
+function renderCards() {
+  const q = $('#q').value.trim().toLowerCase(), sc = $('#fScope').value, th = $('#fThemeB').value, ac = $('#fAccess').value, st = $('#fStatus').value;
+  const terms = q.split(/\s+/).filter(Boolean);
+  const rows = DS.filter(d => (!sc || d.scope === sc) && (!th || d.themes.includes(th)) && (!ac || d.access === ac) && (!st || d.status === st) && terms.every(t => hay(d).includes(t)));
+  $('#count').textContent = `${rows.length} of ${DS.length} datasets`;
+  $('#cards').innerHTML = rows.length ? rows.map(d => `<article class="card" data-id="${d.id}" tabindex="0" role="button" aria-label="${esc(d.name)}">
+      <div class="top"><span class="scope">${esc(d.scope)} · ${esc(C.level_labels[d.level])}</span>${status(d)}</div>
+      <h3>${esc(d.name)}</h3><p>${esc(d.what)}</p>
+      <div class="tags">${d.designs.slice(0, 2).map(k => `<span class="tag">${esc(C.designs[k].label)}</span>`).join('')}<span class="tag">${esc(d.access)}</span></div>
+    </article>`).join('') : `<div class="empty" style="grid-column:1/-1">No datasets match “${esc(q)}”. Try a broader term, or <a style="color:var(--teal);font-weight:700" href="mailto:aashuarora@gmail.com?subject=Data%20Finder%20suggestion">suggest a dataset</a>.</div>`;
+  document.querySelectorAll('.card').forEach(n => { n.onclick = () => openDs(n.dataset.id); n.onkeydown = e => { if (e.key === 'Enter') openDs(n.dataset.id); }; });
+}
+['#q', '#fScope', '#fThemeB', '#fAccess', '#fStatus'].forEach(s => $(s).addEventListener('input', renderCards));
+renderCards();
+
+// ---------------------------------------------------------------- compare table
+let sortK = 'lvl', sortDir = -1;
+function renderTable() {
+  const val = (d, k) => k === 'lvl' ? LV[d.level] : k === 'sex' ? { yes: 2, partial: 1, no: 0 }[d.sex] : (d[k] || '').toString().toLowerCase();
+  const rows = DS.slice().sort((a, b) => (val(a, sortK) > val(b, sortK) ? 1 : val(a, sortK) < val(b, sortK) ? -1 : 0) * sortDir);
+  $('#tbl tbody').innerHTML = rows.map(d => `<tr style="cursor:pointer" data-id="${d.id}"><td class="n"><b>${esc(d.name.replace(/ \(.*\)$/, ''))}</b></td><td>${esc(d.scope)}</td><td>${esc(d.structure)}</td>
+    <td>${esc(C.level_labels[d.level])}</td><td>${esc(d.latest)}</td><td class="n"><span class="dot ${d.sex}"></span>${d.sex}</td><td>${esc(d.access)}</td><td>${status(d)}</td></tr>`).join('');
+  document.querySelectorAll('#tbl tbody tr').forEach(n => n.onclick = () => openDs(n.dataset.id));
+}
+document.querySelectorAll('#tbl th').forEach(th => th.onclick = () => { const k = th.dataset.k; sortDir = sortK === k ? -sortDir : 1; sortK = k; renderTable(); });
+renderTable();
+
+// ---------------------------------------------------------------- map
+const M = DATA.metrics, MP = DATA.map;
+const BINS = [5, 15, 30, 50], COLS = ['--h0', '--h1', '--h2', '--h3', '--h4'];
+const col = v => v == null ? 'var(--nodata)' : `var(${COLS[BINS.findIndex(b => v < b) === -1 ? 4 : BINS.findIndex(b => v < b)]})`;
+const svg = $('#world');
+svg.setAttribute('viewBox', `0 0 ${MP.w} ${MP.h}`);
+svg.innerHTML = Object.entries(MP.paths).map(([k, p]) => `<path data-iso="${k}" d="${p.d}"></path>`).join('');
+let mSel = 'hygiene';
+function renderMap() {
+  const m = M.find(x => x.key === mSel);
+  $('#mPills').innerHTML = M.map(x => `<button class="pill ${x.key === mSel ? 'on' : ''}" data-k="${x.key}">${esc(x.label)}</button>`).join('');
+  document.querySelectorAll('#mPills .pill').forEach(b => b.onclick = () => { mSel = b.dataset.k; renderMap(); });
+  svg.querySelectorAll('path').forEach(p => { const v = m.values[p.dataset.iso]; p.style.fill = col(v ? v[0] : null); });
+  const lab = ['under 5%', '5–15%', '15–30%', '30–50%', '50% or more'];
+  $('#legend').innerHTML = lab.map((l, i) => `<span><i style="background:var(${COLS[i]})"></i>${l}</span>`).join('') + `<span><i style="background:var(--nodata)"></i>no data</span>`;
+  const top = Object.entries(m.values).sort((a, b) => b[1][0] - a[1][0]).slice(0, 10);
+  $('#side').innerHTML = `<h3>${esc(m.label)}</h3><div class="unit">${esc(m.unit)}</div>
+    <ol class="top10">${top.map(([k, v]) => `<li><span>${esc(v[2])} <small>${v[1]}</small></span><b>${v[0].toFixed(1)}%</b></li>`).join('')}</ol>
+    <div class="measure">Measure it at finer resolution with:<br>${m.datasets.map(id => `<button data-id="${id}">${esc(byId[id].name.replace(/ \(.*\)$/, ''))}</button>`).join('')}</div>`;
+  document.querySelectorAll('#side .measure button').forEach(b => b.onclick = () => openDs(b.dataset.id));
+  $('#mNote').textContent = `${m.n} countries with data from 2015 onward. Source: World Bank Group Scorecard vision indicators, FY25 cycle. Hotspot = higher share of people exposed; darker is worse.`;
+}
+const tip = $('#tip');
+svg.addEventListener('pointermove', e => {
+  const p = e.target.closest('path'); if (!p) { tip.style.opacity = 0; return; }
+  const m = M.find(x => x.key === mSel), v = m.values[p.dataset.iso], name = MP.paths[p.dataset.iso].name;
+  tip.innerHTML = `<b>${esc(name)}</b><br>${v ? `${v[0].toFixed(1)}% · ${v[1]}` : 'no data from 2015 onward'}`;
+  tip.style.left = Math.min(e.clientX + 12, innerWidth - 270) + 'px'; tip.style.top = (e.clientY - 44) + 'px'; tip.style.opacity = 1;
+});
+svg.addEventListener('pointerleave', () => tip.style.opacity = 0);
+renderMap();
+
+// ---------------------------------------------------------------- designs
+$('#dgrid').innerHTML = Object.entries(C.designs).map(([k, v]) => {
+  const ds = DS.filter(d => d.designs.includes(k));
+  return `<div class="dcard"><h3>${esc(v.label)}</h3><p>${esc(v.note)}</p>${ds.map(d => `<button data-id="${d.id}">${esc(d.name.replace(/ \(.*\)$/, '').replace(/:.*$/, ''))}</button>`).join('')}</div>`;
+}).join('');
+document.querySelectorAll('#dgrid button').forEach(b => b.onclick = () => openDs(b.dataset.id));
+</script>
+</body>
+</html>

@@ -1,0 +1,907 @@
+{
+ "labels": {
+  "food": "Food & nutrition insecurity",
+  "hygiene": "No basic hygiene",
+  "sanitation": "No basic sanitation",
+  "water": "No basic drinking water",
+  "poverty": "Poverty ($3.00/day)",
+  "climate": "High climate-hazard risk"
+ },
+ "n_countries": {
+  "food": 158,
+  "hygiene": 120,
+  "sanitation": 229,
+  "water": 229,
+  "poverty": 152,
+  "climate": 115
+ },
+ "n_full": 80,
+ "q75": {
+  "food": 45.5,
+  "hygiene": 73.0,
+  "sanitation": 27.9,
+  "water": 10.8,
+  "poverty": 17.5
+ },
+ "hotspots": [
+  {
+   "iso": "LBR",
+   "name": "Liberia",
+   "n": 5,
+   "food": 80.8,
+   "hygiene": 96.5,
+   "sanitation": 76.7,
+   "water": 21.2,
+   "poverty": 33.6,
+   "climate": null
+  },
+  {
+   "iso": "ETH",
+   "name": "Ethiopia",
+   "n": 5,
+   "food": 61.4,
+   "hygiene": 94.1,
+   "sanitation": 89.6,
+   "water": 44.4,
+   "poverty": 38.6,
+   "climate": 31.2
+  },
+  {
+   "iso": "BDI",
+   "name": "Burundi",
+   "n": 5,
+   "food": 70.8,
+   "hygiene": 93.6,
+   "sanitation": 55.4,
+   "water": 34.1,
+   "poverty": 74.2,
+   "climate": null
+  },
+  {
+   "iso": "BEN",
+   "name": "Benin",
+   "n": 5,
+   "food": 65.6,
+   "hygiene": 87.1,
+   "sanitation": 77.8,
+   "water": 30.4,
+   "poverty": 27.2,
+   "climate": 39.9
+  },
+  {
+   "iso": "GMB",
+   "name": "Gambia, The",
+   "n": 5,
+   "food": 54.8,
+   "hygiene": 87.0,
+   "sanitation": 51.8,
+   "water": 12.9,
+   "poverty": 22.0,
+   "climate": 61.8
+  },
+  {
+   "iso": "MWI",
+   "name": "Malawi",
+   "n": 5,
+   "food": 81.7,
+   "hygiene": 84.6,
+   "sanitation": 50.8,
+   "water": 26.9,
+   "poverty": 75.4,
+   "climate": 37.8
+  },
+  {
+   "iso": "TGO",
+   "name": "Togo",
+   "n": 5,
+   "food": 58.5,
+   "hygiene": 82.6,
+   "sanitation": 74.8,
+   "water": 35.2,
+   "poverty": 34.7,
+   "climate": 65.9
+  },
+  {
+   "iso": "TZA",
+   "name": "Tanzania",
+   "n": 5,
+   "food": 58.0,
+   "hygiene": 82.5,
+   "sanitation": 62.8,
+   "water": 35.4,
+   "poverty": 51.3,
+   "climate": 49.8
+  },
+  {
+   "iso": "SLE",
+   "name": "Sierra Leone",
+   "n": 5,
+   "food": 89.8,
+   "hygiene": 81.3,
+   "sanitation": 75.1,
+   "water": 31.9,
+   "poverty": 41.5,
+   "climate": 42.5
+  },
+  {
+   "iso": "COD",
+   "name": "Congo, Democratic Republic of",
+   "n": 5,
+   "food": 81.5,
+   "hygiene": 80.6,
+   "sanitation": 83.7,
+   "water": 64.3,
+   "poverty": 85.3,
+   "climate": 15.0
+  },
+  {
+   "iso": "GNB",
+   "name": "Guinea-Bissau",
+   "n": 5,
+   "food": 62.5,
+   "hygiene": 80.2,
+   "sanitation": 71.1,
+   "water": 38.2,
+   "poverty": 39.9,
+   "climate": null
+  },
+  {
+   "iso": "LSO",
+   "name": "Lesotho",
+   "n": 5,
+   "food": 59.9,
+   "hygiene": 79.1,
+   "sanitation": 52.1,
+   "water": 21.9,
+   "poverty": 41.9,
+   "climate": null
+  },
+  {
+   "iso": "NER",
+   "name": "Niger",
+   "n": 5,
+   "food": 50.9,
+   "hygiene": 78.5,
+   "sanitation": 83.7,
+   "water": 46.6,
+   "poverty": 60.5,
+   "climate": 69.3
+  },
+  {
+   "iso": "SSD",
+   "name": "South Sudan",
+   "n": 5,
+   "food": 88.1,
+   "hygiene": 78.1,
+   "sanitation": 85.6,
+   "water": 60.3,
+   "poverty": 76.5,
+   "climate": null
+  },
+  {
+   "iso": "CAF",
+   "name": "Central African Republic",
+   "n": 5,
+   "food": 88.1,
+   "hygiene": 77.6,
+   "sanitation": 86.0,
+   "water": 63.5,
+   "poverty": 71.6,
+   "climate": null
+  }
+ ],
+ "n_hot4plus": 31,
+ "n_hot5": 18,
+ "hot4_names": [
+  "Angola",
+  "Burundi",
+  "Benin",
+  "Burkina Faso",
+  "Central African Republic",
+  "Cote d'Ivoire",
+  "Cameroon",
+  "Congo, Democratic Republic of",
+  "Djibouti",
+  "Ethiopia",
+  "Gambia, The",
+  "Guinea-Bissau",
+  "Kenya",
+  "Liberia",
+  "Lesotho",
+  "Madagascar",
+  "Mali",
+  "Malawi",
+  "Namibia",
+  "Niger",
+  "Nigeria",
+  "Senegal",
+  "Sierra Leone",
+  "South Sudan",
+  "Eswatini",
+  "Chad",
+  "Togo",
+  "Tanzania",
+  "Uganda",
+  "Zambia",
+  "Zimbabwe"
+ ],
+ "assoc": {
+  "food": {
+   "rho": 0.8,
+   "p": 1.0699788772454871e-31,
+   "n": 134
+  },
+  "hygiene": {
+   "rho": 0.81,
+   "p": 3.9678030618564047e-23,
+   "n": 94
+  },
+  "sanitation": {
+   "rho": 0.79,
+   "p": 1.6005788887946667e-33,
+   "n": 150
+  },
+  "water": {
+   "rho": 0.8,
+   "p": 4.530689779016451e-34,
+   "n": 150
+  },
+  "climate": {
+   "rho": 0.71,
+   "p": 3.8799896550690437e-19,
+   "n": 115
+  }
+ },
+ "scatter": [
+  {
+   "iso": "AGO",
+   "name": "Angola",
+   "x": 39.3,
+   "y": 63.1
+  },
+  {
+   "iso": "ARM",
+   "name": "Armenia",
+   "x": 0.8,
+   "y": 5.6
+  },
+  {
+   "iso": "BDI",
+   "name": "Burundi",
+   "x": 74.2,
+   "y": 93.6
+  },
+  {
+   "iso": "BEN",
+   "name": "Benin",
+   "x": 27.2,
+   "y": 87.1
+  },
+  {
+   "iso": "BFA",
+   "name": "Burkina Faso",
+   "x": 42.1,
+   "y": 74.1
+  },
+  {
+   "iso": "BGD",
+   "name": "Bangladesh",
+   "x": 5.9,
+   "y": 28.2
+  },
+  {
+   "iso": "BIH",
+   "name": "Bosnia and Herzegovina",
+   "x": 0.3,
+   "y": 2.7
+  },
+  {
+   "iso": "BLZ",
+   "name": "Belize",
+   "x": 1.0,
+   "y": 9.7
+  },
+  {
+   "iso": "BOL",
+   "name": "Bolivia",
+   "x": 2.1,
+   "y": 73.0
+  },
+  {
+   "iso": "BRB",
+   "name": "Barbados",
+   "x": 1.7,
+   "y": 11.5
+  },
+  {
+   "iso": "BTN",
+   "name": "Bhutan",
+   "x": 0.0,
+   "y": 5.5
+  },
+  {
+   "iso": "CAF",
+   "name": "Central African Republic",
+   "x": 71.6,
+   "y": 77.6
+  },
+  {
+   "iso": "CHN",
+   "name": "China",
+   "x": 0.0,
+   "y": 2.7
+  },
+  {
+   "iso": "CIV",
+   "name": "Cote d'Ivoire",
+   "x": 20.8,
+   "y": 78.0
+  },
+  {
+   "iso": "CMR",
+   "name": "Cameroon",
+   "x": 26.7,
+   "y": 62.2
+  },
+  {
+   "iso": "COD",
+   "name": "Congo, Democratic Republic of",
+   "x": 85.3,
+   "y": 80.6
+  },
+  {
+   "iso": "COL",
+   "name": "Colombia",
+   "x": 8.5,
+   "y": 29.6
+  },
+  {
+   "iso": "COM",
+   "name": "Comoros",
+   "x": 5.1,
+   "y": 65.2
+  },
+  {
+   "iso": "CPV",
+   "name": "Cabo Verde",
+   "x": 14.6,
+   "y": 39.1
+  },
+  {
+   "iso": "CRI",
+   "name": "Costa Rica",
+   "x": 0.8,
+   "y": 14.0
+  },
+  {
+   "iso": "DJI",
+   "name": "Djibouti",
+   "x": 25.4,
+   "y": 49.3
+  },
+  {
+   "iso": "DOM",
+   "name": "Dominican Republic",
+   "x": 0.8,
+   "y": 51.5
+  },
+  {
+   "iso": "ECU",
+   "name": "Ecuador",
+   "x": 3.4,
+   "y": 8.1
+  },
+  {
+   "iso": "EGY",
+   "name": "Egypt, Arab Republic of",
+   "x": 1.4,
+   "y": 7.7
+  },
+  {
+   "iso": "ETH",
+   "name": "Ethiopia",
+   "x": 38.6,
+   "y": 94.1
+  },
+  {
+   "iso": "FJI",
+   "name": "Fiji",
+   "x": 4.7,
+   "y": 13.4
+  },
+  {
+   "iso": "GAB",
+   "name": "Gabon",
+   "x": 3.8,
+   "y": 51.8
+  },
+  {
+   "iso": "GEO",
+   "name": "Georgia",
+   "x": 4.2,
+   "y": 8.2
+  },
+  {
+   "iso": "GHA",
+   "name": "Ghana",
+   "x": 39.0,
+   "y": 54.5
+  },
+  {
+   "iso": "GIN",
+   "name": "Guinea",
+   "x": 11.7,
+   "y": 79.4
+  },
+  {
+   "iso": "GMB",
+   "name": "Gambia, The",
+   "x": 22.0,
+   "y": 87.0
+  },
+  {
+   "iso": "GNB",
+   "name": "Guinea-Bissau",
+   "x": 39.9,
+   "y": 80.2
+  },
+  {
+   "iso": "GNQ",
+   "name": "Equatorial Guinea",
+   "x": 8.8,
+   "y": 75.8
+  },
+  {
+   "iso": "GTM",
+   "name": "Guatemala",
+   "x": 9.7,
+   "y": 23.2
+  },
+  {
+   "iso": "HND",
+   "name": "Honduras",
+   "x": 15.7,
+   "y": 15.0
+  },
+  {
+   "iso": "IDN",
+   "name": "Indonesia",
+   "x": 4.0,
+   "y": 20.2
+  },
+  {
+   "iso": "IND",
+   "name": "India",
+   "x": 5.3,
+   "y": 10.3
+  },
+  {
+   "iso": "IRQ",
+   "name": "Iraq",
+   "x": 0.5,
+   "y": 2.6
+  },
+  {
+   "iso": "JAM",
+   "name": "Jamaica",
+   "x": 1.4,
+   "y": 29.6
+  },
+  {
+   "iso": "KAZ",
+   "name": "Kazakhstan",
+   "x": 0.0,
+   "y": 1.0
+  },
+  {
+   "iso": "KEN",
+   "name": "Kenya",
+   "x": 45.5,
+   "y": 42.5
+  },
+  {
+   "iso": "KGZ",
+   "name": "Kyrgyz Republic",
+   "x": 2.2,
+   "y": 2.8
+  },
+  {
+   "iso": "KIR",
+   "name": "Kiribati",
+   "x": 0.9,
+   "y": 37.8
+  },
+  {
+   "iso": "LAO",
+   "name": "Lao People's Democratic Republic",
+   "x": 7.1,
+   "y": 36.4
+  },
+  {
+   "iso": "LBR",
+   "name": "Liberia",
+   "x": 33.6,
+   "y": 96.5
+  },
+  {
+   "iso": "LCA",
+   "name": "St. Lucia",
+   "x": 0.1,
+   "y": 12.7
+  },
+  {
+   "iso": "LKA",
+   "name": "Sri Lanka",
+   "x": 2.7,
+   "y": 12.3
+  },
+  {
+   "iso": "LSO",
+   "name": "Lesotho",
+   "x": 41.9,
+   "y": 79.1
+  },
+  {
+   "iso": "MDA",
+   "name": "Moldova",
+   "x": 0.1,
+   "y": 13.0
+  },
+  {
+   "iso": "MDG",
+   "name": "Madagascar",
+   "x": 69.2,
+   "y": 76.5
+  },
+  {
+   "iso": "MDV",
+   "name": "Maldives",
+   "x": 0.0,
+   "y": 4.2
+  },
+  {
+   "iso": "MEX",
+   "name": "Mexico",
+   "x": 1.6,
+   "y": 1.2
+  },
+  {
+   "iso": "MHL",
+   "name": "Marshall Islands",
+   "x": 2.1,
+   "y": 14.9
+  },
+  {
+   "iso": "MKD",
+   "name": "North Macedonia",
+   "x": 3.9,
+   "y": 0.3
+  },
+  {
+   "iso": "MLI",
+   "name": "Mali",
+   "x": 36.1,
+   "y": 82.7
+  },
+  {
+   "iso": "MMR",
+   "name": "Myanmar",
+   "x": 10.3,
+   "y": 25.3
+  },
+  {
+   "iso": "MNE",
+   "name": "Montenegro",
+   "x": 2.5,
+   "y": 0.8
+  },
+  {
+   "iso": "MNG",
+   "name": "Mongolia",
+   "x": 0.4,
+   "y": 13.6
+  },
+  {
+   "iso": "MOZ",
+   "name": "Mozambique",
+   "x": 81.4,
+   "y": 84.2
+  },
+  {
+   "iso": "MRT",
+   "name": "Mauritania",
+   "x": 10.2,
+   "y": 59.3
+  },
+  {
+   "iso": "MWI",
+   "name": "Malawi",
+   "x": 75.4,
+   "y": 84.6
+  },
+  {
+   "iso": "NAM",
+   "name": "Namibia",
+   "x": 22.9,
+   "y": 55.4
+  },
+  {
+   "iso": "NER",
+   "name": "Niger",
+   "x": 60.5,
+   "y": 78.5
+  },
+  {
+   "iso": "NGA",
+   "name": "Nigeria",
+   "x": 41.8,
+   "y": 68.7
+  },
+  {
+   "iso": "NPL",
+   "name": "Nepal",
+   "x": 2.4,
+   "y": 31.8
+  },
+  {
+   "iso": "PAK",
+   "name": "Pakistan",
+   "x": 23.0,
+   "y": 15.2
+  },
+  {
+   "iso": "PHL",
+   "name": "Philippines",
+   "x": 11.5,
+   "y": 2.7
+  },
+  {
+   "iso": "PRY",
+   "name": "Paraguay",
+   "x": 2.1,
+   "y": 19.8
+  },
+  {
+   "iso": "PSE",
+   "name": "West Bank and Gaza",
+   "x": 2.1,
+   "y": 5.1
+  },
+  {
+   "iso": "QAT",
+   "name": "Qatar",
+   "x": 0.0,
+   "y": 0.0
+  },
+  {
+   "iso": "RWA",
+   "name": "Rwanda",
+   "x": 38.6,
+   "y": 81.5
+  },
+  {
+   "iso": "SEN",
+   "name": "Senegal",
+   "x": 17.9,
+   "y": 73.1
+  },
+  {
+   "iso": "SLE",
+   "name": "Sierra Leone",
+   "x": 41.5,
+   "y": 81.3
+  },
+  {
+   "iso": "SLV",
+   "name": "El Salvador",
+   "x": 4.6,
+   "y": 11.8
+  },
+  {
+   "iso": "SSD",
+   "name": "South Sudan",
+   "x": 76.5,
+   "y": 78.1
+  },
+  {
+   "iso": "STP",
+   "name": "Sao Tome and Principe",
+   "x": 13.0,
+   "y": 41.7
+  },
+  {
+   "iso": "SUR",
+   "name": "Suriname",
+   "x": 2.2,
+   "y": 27.9
+  },
+  {
+   "iso": "SWZ",
+   "name": "Eswatini",
+   "x": 44.5,
+   "y": 60.7
+  },
+  {
+   "iso": "SYR",
+   "name": "Syrian Arab Republic",
+   "x": 18.0,
+   "y": 15.5
+  },
+  {
+   "iso": "TCD",
+   "name": "Chad",
+   "x": 39.5,
+   "y": 73.7
+  },
+  {
+   "iso": "TGO",
+   "name": "Togo",
+   "x": 34.7,
+   "y": 82.6
+  },
+  {
+   "iso": "THA",
+   "name": "Thailand",
+   "x": 0.0,
+   "y": 5.4
+  },
+  {
+   "iso": "TJK",
+   "name": "Tajikistan",
+   "x": 6.1,
+   "y": 27.0
+  },
+  {
+   "iso": "TON",
+   "name": "Tonga",
+   "x": 0.4,
+   "y": 19.1
+  },
+  {
+   "iso": "TUN",
+   "name": "Tunisia",
+   "x": 0.7,
+   "y": 7.3
+  },
+  {
+   "iso": "TZA",
+   "name": "Tanzania",
+   "x": 51.3,
+   "y": 82.5
+  },
+  {
+   "iso": "UGA",
+   "name": "Uganda",
+   "x": 59.8,
+   "y": 75.4
+  },
+  {
+   "iso": "UKR",
+   "name": "Ukraine",
+   "x": 0.0,
+   "y": 4.6
+  },
+  {
+   "iso": "UZB",
+   "name": "Uzbekistan",
+   "x": 2.3,
+   "y": 18.4
+  },
+  {
+   "iso": "VNM",
+   "name": "Viet Nam",
+   "x": 1.6,
+   "y": 10.9
+  },
+  {
+   "iso": "VUT",
+   "name": "Vanuatu",
+   "x": 19.5,
+   "y": 51.6
+  },
+  {
+   "iso": "ZAF",
+   "name": "South Africa",
+   "x": 17.4,
+   "y": 55.6
+  },
+  {
+   "iso": "ZMB",
+   "name": "Zambia",
+   "x": 71.7,
+   "y": 81.6
+  },
+  {
+   "iso": "ZWE",
+   "name": "Zimbabwe",
+   "x": 49.2,
+   "y": 57.5
+  }
+ ],
+ "india": {
+  "food": {
+   "SAS": {
+    "v": 39.3,
+    "t": 2023
+   },
+   "WLD": {
+    "v": 28.4,
+    "t": 2023
+   }
+  },
+  "hygiene": {
+   "IND": {
+    "v": 10.3,
+    "t": 2024
+   },
+   "SAS": {
+    "v": 12.6,
+    "t": 2024
+   },
+   "WLD": {
+    "v": 22.0,
+    "t": 2024
+   }
+  },
+  "sanitation": {
+   "IND": {
+    "v": 16.6,
+    "t": 2024
+   },
+   "SAS": {
+    "v": 18.0,
+    "t": 2024
+   },
+   "WLD": {
+    "v": 17.8,
+    "t": 2024
+   }
+  },
+  "water": {
+   "IND": {
+    "v": 4.3,
+    "t": 2024
+   },
+   "SAS": {
+    "v": 4.1,
+    "t": 2024
+   },
+   "WLD": {
+    "v": 8.6,
+    "t": 2024
+   }
+  },
+  "poverty": {
+   "IND": {
+    "v": 5.3,
+    "t": 2022
+   },
+   "SAS": {
+    "v": 3.8,
+    "t": 2024
+   },
+   "WLD": {
+    "v": 10.4,
+    "t": 2024
+   }
+  },
+  "climate": {
+   "IND": {
+    "v": 15.8,
+    "t": 2024
+   },
+   "SAS": {
+    "v": 20.7,
+    "t": 2024
+   },
+   "WLD": {
+    "v": 17.3,
+    "t": 2024
+   }
+  }
+ },
+ "year_range": [
+  2015,
+  2025
+ ]
+}
